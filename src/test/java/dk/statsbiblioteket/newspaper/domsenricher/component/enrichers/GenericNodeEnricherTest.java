@@ -3,6 +3,7 @@ package dk.statsbiblioteket.newspaper.domsenricher.component.enrichers;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.ParsingEvent;
+import dk.statsbiblioteket.newspaper.treenode.NodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
@@ -15,27 +16,25 @@ import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  *
  */
-public class BatchNodeEnricherTest {
+public class GenericNodeEnricherTest {
 
-    private static Logger logger = LoggerFactory.getLogger(BatchNodeEnricherTest.class);
+    private static Logger logger = LoggerFactory.getLogger(GenericNodeEnricherTest.class);
+    EnhancedFedora fedora;
 
     @BeforeMethod(alwaysRun = true)
     public void setUp() throws Exception {
         logger.debug("Doing setUp.");
+        fedora = mock(EnhancedFedora.class);
     }
 
     @Test
     public void testEnrich() throws Exception {
-        EnhancedFedora fedora = mock(EnhancedFedora.class);
-        AbstractNodeEnricher enricher = new BatchNodeEnricher(fedora);
+        NodeEnricherFactory factory = new NodeEnricherFactory(fedora);
+        AbstractNodeEnricher enricher = factory.getNodeEnricher(NodeType.BATCH);
         final String pid = "uuid:foobar";
         ParsingEvent event = new NodeBeginsParsingEvent("B400022028241-RT1", pid);
         enricher.enrich(event);

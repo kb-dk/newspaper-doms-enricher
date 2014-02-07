@@ -21,7 +21,7 @@ public class NodeEnricherFactory {
     public AbstractNodeEnricher getNodeEnricher(NodeType nodeType) {
         switch (nodeType) {
             case BATCH:
-                return new BatchNodeEnricher(fedora);
+                return new GenericNodeEnricher(fedora, "ContentModel_Batch");
             case WORKSHIFT_ISO_TARGET:
                 throw new RuntimeException("not implemented");
             case WORKSHIFT_TARGET:

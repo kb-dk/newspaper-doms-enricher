@@ -15,7 +15,7 @@ public abstract class AbstractNodeEnricher {
 
     private final String HAS_MODEL = "info:fedora/fedora-system:def/model#hasModel";
 
-    protected final String domsNS = "http://doms.statsbiblioteket.dk/relations/default/0/1/#";
+    protected final String domsNS = "doms:";
     private final String contentModelDoms = domsNS + "ContentModel_DOMS";
 
 
