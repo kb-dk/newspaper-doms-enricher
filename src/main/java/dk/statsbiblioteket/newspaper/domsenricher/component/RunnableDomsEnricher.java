@@ -8,6 +8,8 @@ import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventRunner;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 import dk.statsbiblioteket.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +20,9 @@ import java.util.Properties;
  * The runnable component for the DomsEnricher
  */
 public class RunnableDomsEnricher extends AbstractRunnableComponent{
+
+    private static Logger logger = LoggerFactory.getLogger(RunnableDomsEnricher.class);
+
     private final EnhancedFedora eFedora;
 
     public RunnableDomsEnricher(Properties properties, EnhancedFedora eFedora) {
@@ -32,6 +37,7 @@ public class RunnableDomsEnricher extends AbstractRunnableComponent{
 
     @Override
     public void doWorkOnBatch(Batch batch, ResultCollector resultCollector) throws IOException {
+        logger.debug("Beginning enrichment of " + batch.getFullID());
         List<TreeEventHandler> handlers = new ArrayList<>();
         handlers.add(new DomsEnricherTreeEventHandler(eFedora, resultCollector));
         EventRunner eventRunner = new EventRunner(createIterator(batch));

@@ -7,63 +7,44 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.ParsingEvent
 import dk.statsbiblioteket.newspaper.treenode.NodeType;
 import sun.reflect.generics.tree.Tree;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  */
 public class NodeEnricherFactory {
 
+    private Map<NodeType, AbstractNodeEnricher> nodeEnricherMap;
+
     private EnhancedFedora fedora;
 
     public NodeEnricherFactory(EnhancedFedora fedora) {
         this.fedora = fedora;
+        createEnrichers();
+    }
+
+    private void createEnrichers() {
+        nodeEnricherMap = new HashMap<>();
+        nodeEnricherMap.put(NodeType.BATCH, new GenericNodeEnricher(fedora, "ContentModel_RoundTrip"));
+        nodeEnricherMap.put(NodeType.WORKSHIFT_ISO_TARGET, new GenericNodeEnricher(fedora, "ContentModel_Workshift"));
+        nodeEnricherMap.put(NodeType.WORKSHIFT_TARGET, new GenericNodeEnricher(fedora, null));
+        nodeEnricherMap.put(NodeType.TARGET_IMAGE, new GenericNodeEnricher(fedora, "ContentModel_Jpeg2000File"));
+        nodeEnricherMap.put(NodeType.FILM, new GenericNodeEnricher(fedora, "ContentModel_Film"));
+        nodeEnricherMap.put(NodeType.FILM_ISO_TARGET, new GenericNodeEnricher(fedora, "ContentModel_IsoTarget"));
+        nodeEnricherMap.put(NodeType.FILM_TARGET, new GenericNodeEnricher(fedora, null));
+        nodeEnricherMap.put(NodeType.ISO_TARGET_IMAGE, new GenericNodeEnricher(fedora, "ContentModel_Jpeg2000File"));
+        nodeEnricherMap.put(NodeType.UNMATCHED, new GenericNodeEnricher(fedora, "ContentModel_Unmatched"));
+        nodeEnricherMap.put(NodeType.EDITION, new GenericNodeEnricher(fedora, "ContentModel_Edition"));
+        nodeEnricherMap.put(NodeType.PAGE, new GenericNodeEnricher(fedora, "ContentModel_Page"));
+        nodeEnricherMap.put(NodeType.BRIK, new GenericNodeEnricher(fedora, "ContentModel_Brik"));
+        nodeEnricherMap.put(NodeType.BRIK_IMAGE, new GenericNodeEnricher(fedora, "ContentModel_Jpeg2000File"));
+        nodeEnricherMap.put(NodeType.PAGE_IMAGE, new GenericNodeEnricher(fedora, "ContentModel_Jpeg2000File"));
     }
 
     public AbstractNodeEnricher getNodeEnricher(NodeType nodeType) {
-        switch (nodeType) {
-            case BATCH:
-                return new GenericNodeEnricher(fedora, "ContentModel_Batch");
-            case WORKSHIFT_ISO_TARGET:
-                throw new RuntimeException("not implemented");
-            case WORKSHIFT_TARGET:
-                throw new RuntimeException("not implemented");
-                
-            case TARGET_IMAGE:
-                throw new RuntimeException("not implemented");
-                
-            case FILM:
-                throw new RuntimeException("not implemented");
-                
-            case FILM_ISO_TARGET:
-                throw new RuntimeException("not implemented");
-                
-            case FILM_TARGET:
-                throw new RuntimeException("not implemented");
-                
-            case ISO_TARGET_IMAGE:
-                throw new RuntimeException("not implemented");
-                
-            case UNMATCHED:
-                throw new RuntimeException("not implemented");
-                
-            case EDITION:
-                throw new RuntimeException("not implemented");
-                
-            case PAGE:
-                throw new RuntimeException("not implemented");
-                
-            case BRIK:
-                throw new RuntimeException("not implemented");
-                
-            case BRIK_IMAGE:
-                throw new RuntimeException("not implemented");
-                
-            case PAGE_IMAGE:
-                throw new RuntimeException("not implemented");
-                
-        }        
-        throw new RuntimeException("not implemented");
+        return nodeEnricherMap.get(nodeType);
     }
 
-    
-    
+
 }
