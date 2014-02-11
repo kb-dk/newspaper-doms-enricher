@@ -81,8 +81,10 @@ public class RunnableDomsEnricherTestIT {
         env.put("pagesPerUnmatched", "1");
         env.put("probabilitySplit", "50");
         env.put("probabilityBrik", "20");
+        logger.debug("Generating batch: B{}-RT{}", BATCH_ID, ROUNDTRIP_NO);
         Process process = processBuilder.start();
         process.waitFor();
+        logger.debug("Batch generation finished.");
     }
 
 
@@ -96,6 +98,7 @@ public class RunnableDomsEnricherTestIT {
 
     private void cleanRoundtripFromDoms() throws Exception {
         String label = "path:" + batch.getFullID();
+        logger.debug("Cleaning up from '" + label + "'");
         RecursiveFedoraCleaner.cleanFedora(fedora, label, true);
     }
 
