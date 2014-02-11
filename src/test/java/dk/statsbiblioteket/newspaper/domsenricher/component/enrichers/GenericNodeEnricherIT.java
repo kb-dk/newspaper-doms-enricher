@@ -39,7 +39,7 @@ public class GenericNodeEnricherIT  {
     EnhancedFedora fedora;
     private final String HAS_MODEL = "info:fedora/fedora-system:def/model#hasModel";
     public static final String ROUNDTRIP_MODEL = "doms:" + "ContentModel_RoundTrip";
-    String batchId = "B400022028254-RT1";
+    String batchId = "B123321123-RT12";
     String pid;
 
     @BeforeMethod(alwaysRun = true)
