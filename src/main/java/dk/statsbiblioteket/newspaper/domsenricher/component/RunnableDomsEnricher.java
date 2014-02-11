@@ -25,6 +25,11 @@ public class RunnableDomsEnricher extends AbstractRunnableComponent{
 
     private final EnhancedFedora eFedora;
 
+    /**
+     * Constructor for this class.
+     * @param properties the properties to use.
+     * @param eFedora the fedora instance containing the objects to work on.
+     */
     public RunnableDomsEnricher(Properties properties, EnhancedFedora eFedora) {
         super(properties);
         this.eFedora = eFedora;

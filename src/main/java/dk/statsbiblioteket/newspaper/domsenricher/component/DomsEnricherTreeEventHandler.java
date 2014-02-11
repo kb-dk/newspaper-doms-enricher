@@ -14,7 +14,7 @@ import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnrich
 import dk.statsbiblioteket.newspaper.treenode.TreeNodeState;
 
 /**
- *
+ * A tree handler which enriches each node with the relevant content models.
  */
 public class DomsEnricherTreeEventHandler extends TreeNodeState {
 
@@ -32,8 +32,7 @@ public class DomsEnricherTreeEventHandler extends TreeNodeState {
         try {
             nodeEnricherFactory.getNodeEnricher(getCurrentNode().getType()).enrich(event);
         } catch (Exception e) {
-            //resultCollector.addFailure();
-           //Add message to result collector
+            resultCollector.addFailure(event.getName(), "exception", DomsEnricherComponent.class.getSimpleName(), e.getMessage());
         }
     }
 

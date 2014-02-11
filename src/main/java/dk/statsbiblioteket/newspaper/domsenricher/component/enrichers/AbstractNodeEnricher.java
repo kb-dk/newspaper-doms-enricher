@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * A class with a method for enriching a DOMS object with a list of content models.
  */
 public abstract class AbstractNodeEnricher {
 
@@ -26,10 +26,21 @@ public abstract class AbstractNodeEnricher {
 
     private EnhancedFedora fedora;
 
+    /**
+     * Constructor for this class.
+     * @param fedora the location of the objects to be enriched,
+     */
     protected AbstractNodeEnricher(EnhancedFedora fedora) {
         this.fedora = fedora;
     }
 
+    /**
+     * Enrich the object corresponding to the given event.
+     * @param event the event corresponding to a DOMS object to be enriched.
+     * @throws BackendInvalidCredsException
+     * @throws BackendMethodFailedException
+     * @throws BackendInvalidResourceException
+     */
     public void enrich(ParsingEvent event) throws BackendInvalidCredsException, BackendMethodFailedException, BackendInvalidResourceException {
         logger.debug("Enriching " + event.getName());
         List<String> contentModels = new ArrayList<>();
@@ -43,6 +54,11 @@ public abstract class AbstractNodeEnricher {
         }
     }
 
+    /**
+     * Return a list of all content models to be added to objects by this enricher, in addition to
+     * "ContentModel_DOMS" which is added to all objects.
+     * @return
+     */
     protected abstract List<String> getAdditionalContentModels();
 
 }

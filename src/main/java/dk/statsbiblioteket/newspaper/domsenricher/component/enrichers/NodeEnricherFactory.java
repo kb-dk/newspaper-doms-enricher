@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * A Factory class for generating node enrichers.
  */
 public class NodeEnricherFactory {
 
@@ -19,19 +19,26 @@ public class NodeEnricherFactory {
 
     private EnhancedFedora fedora;
 
+    /**
+     * Create a factory from which we can obtain instances of the required node-enrichers.
+     * @param fedora
+     */
     public NodeEnricherFactory(EnhancedFedora fedora) {
         this.fedora = fedora;
         createEnrichers();
     }
 
+    //TODO consider how to distinguish between page-images and other images
     private void createEnrichers() {
         nodeEnricherMap = new HashMap<>();
         nodeEnricherMap.put(NodeType.BATCH, new GenericNodeEnricher(fedora, "ContentModel_RoundTrip"));
         nodeEnricherMap.put(NodeType.WORKSHIFT_ISO_TARGET, new GenericNodeEnricher(fedora, "ContentModel_Workshift"));
+        //TODO create content model for these nodes
         nodeEnricherMap.put(NodeType.WORKSHIFT_TARGET, new GenericNodeEnricher(fedora, null));
         nodeEnricherMap.put(NodeType.TARGET_IMAGE, new GenericNodeEnricher(fedora, "ContentModel_Jpeg2000File"));
         nodeEnricherMap.put(NodeType.FILM, new GenericNodeEnricher(fedora, "ContentModel_Film"));
         nodeEnricherMap.put(NodeType.FILM_ISO_TARGET, new GenericNodeEnricher(fedora, "ContentModel_IsoTarget"));
+        //TODO create content model for these nodes
         nodeEnricherMap.put(NodeType.FILM_TARGET, new GenericNodeEnricher(fedora, null));
         nodeEnricherMap.put(NodeType.ISO_TARGET_IMAGE, new GenericNodeEnricher(fedora, "ContentModel_Jpeg2000File"));
         nodeEnricherMap.put(NodeType.UNMATCHED, new GenericNodeEnricher(fedora, "ContentModel_Unmatched"));
@@ -42,6 +49,11 @@ public class NodeEnricherFactory {
         nodeEnricherMap.put(NodeType.PAGE_IMAGE, new GenericNodeEnricher(fedora, "ContentModel_Jpeg2000File"));
     }
 
+    /**
+     * Return an instance of a subclass of AbstractNodeEnricher which is appropriate for the given node.
+     * @param nodeType the type of the node to be enriched.
+     * @return the enricher.
+     */
     public AbstractNodeEnricher getNodeEnricher(NodeType nodeType) {
         return nodeEnricherMap.get(nodeType);
     }
