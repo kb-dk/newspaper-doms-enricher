@@ -57,7 +57,9 @@ public class GenericNodeEnricherIT  {
         List<String> pids = fedora.findObjectFromDCIdentifier("path:" + batchId);
         pid = pids.get(0);
         logger.debug("Working on pid {}", pid);
-        fedora.deleteRelation(pid, null, HAS_MODEL, ROUNDTRIP_MODEL, false, "" );
+        if (hasRelation(pid, HAS_MODEL, ROUNDTRIP_MODEL)) {
+            fedora.deleteRelation(pid, null, HAS_MODEL, ROUNDTRIP_MODEL, false, "" );
+        }
         assertFalse(hasRelation(pid, HAS_MODEL, ROUNDTRIP_MODEL));
     }
 
