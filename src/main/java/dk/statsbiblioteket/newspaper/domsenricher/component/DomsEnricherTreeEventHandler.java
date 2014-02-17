@@ -1,5 +1,6 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
+import dk.statsbibliokeket.newspaper.treenode.TreeNodeStateWithChildren;
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidResourceException;
 import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
@@ -16,7 +17,7 @@ import dk.statsbiblioteket.newspaper.treenode.TreeNodeState;
 /**
  * A tree handler which enriches each node with the relevant content models.
  */
-public class DomsEnricherTreeEventHandler extends TreeNodeState {
+public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
 
     private ResultCollector resultCollector;
     private NodeEnricherFactory nodeEnricherFactory;
@@ -36,5 +37,8 @@ public class DomsEnricherTreeEventHandler extends TreeNodeState {
         }
     }
 
+    @Override
+    public void handleNodeEnd(NodeEndParsingEvent event) {
 
+    }
 }
