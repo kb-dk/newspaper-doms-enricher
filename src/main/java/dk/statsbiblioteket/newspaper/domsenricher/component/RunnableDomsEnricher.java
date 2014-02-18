@@ -45,7 +45,6 @@ public class RunnableDomsEnricher extends AbstractRunnableComponent{
         logger.debug("Beginning enrichment of " + batch.getFullID());
         List<TreeEventHandler> handlers = new ArrayList<>();
         handlers.add(new DomsEnricherTreeEventHandler(eFedora, resultCollector));
-        //handlers.add(new DomsRelationshipEnricherTreeEventHandler());
         EventRunner eventRunner = new EventRunner(createIterator(batch));
         eventRunner.runEvents(handlers, resultCollector);
     }

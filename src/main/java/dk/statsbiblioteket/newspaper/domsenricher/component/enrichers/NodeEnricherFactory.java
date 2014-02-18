@@ -33,12 +33,12 @@ public class NodeEnricherFactory {
         nodeEnricherMap = new HashMap<>();
         nodeEnricherMap.put(NodeType.BATCH, new GenericNodeEnricher(fedora, "ContentModel_RoundTrip"));
         nodeEnricherMap.put(NodeType.WORKSHIFT_ISO_TARGET, new GenericNodeEnricher(fedora, "ContentModel_Workshift"));
-        //TODO create content model for these nodes
+        //TODO create content model for these nodes - identical content to PAGE
         nodeEnricherMap.put(NodeType.WORKSHIFT_TARGET, new GenericNodeEnricher(fedora, null));
         nodeEnricherMap.put(NodeType.TARGET_IMAGE, new GenericNodeEnricher(fedora, "ContentModel_Jpeg2000File"));
         nodeEnricherMap.put(NodeType.FILM, new GenericNodeEnricher(fedora, "ContentModel_Film"));
         nodeEnricherMap.put(NodeType.FILM_ISO_TARGET, new GenericNodeEnricher(fedora, "ContentModel_IsoTarget"));
-        //TODO create content model for these nodes
+        //TODO create content model for these nodes - identical content to PAGE
         nodeEnricherMap.put(NodeType.FILM_TARGET, new GenericNodeEnricher(fedora, null));
         nodeEnricherMap.put(NodeType.ISO_TARGET_IMAGE, new GenericNodeEnricher(fedora, "ContentModel_Jpeg2000File"));
         nodeEnricherMap.put(NodeType.UNMATCHED, new GenericNodeEnricher(fedora, "ContentModel_Unmatched"));
