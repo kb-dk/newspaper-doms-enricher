@@ -55,6 +55,26 @@ public abstract class AbstractNodeEnricher {
     }
 
     /**
+     * Returns a String representing a list of xml elements like
+     * <hasModel xmlns="info:fedora/fedora-system:def/model#" rdf:resource="info:fedora/doms:ContentModel_RoundTrip"></hasModel>
+     * <hasModel xmlns="info:fedora/fedora-system:def/model#" rdf:resource="info:fedora/doms:ContentModel_DOMS"></hasModel>
+     * which can be added to the xml representation of the RELS-EXT datastream.
+     * @return
+     */
+    public String getRelsExtFragment() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("<hasModel xmlns=\"info:fedora/fedora-system:def/model#\" rdf:resource=\"info:fedora/doms:ContentModel_DOMS\"></hasModel>");
+        builder.append("\n");
+        for (String contentModel: getAdditionalContentModels()) {
+            builder.append("<hasModel xmlns=\"info:fedora/fedora-system:def/model#\" rdf:resource=\"info:fedora/");
+            builder.append(contentModel);
+            builder.append("\"></hasModel>");
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
+
+    /**
      * Return a list of all content models to be added to objects by this enricher, in addition to
      * "ContentModel_DOMS" which is added to all objects.
      * @return
