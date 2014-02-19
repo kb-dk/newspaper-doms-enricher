@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component.enrichers;
 
 import dk.statsbibliokeket.newspaper.treenode.NodeType;
+import dk.statsbibliokeket.newspaper.treenode.TreeNodeWithChildren;
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidResourceException;
 import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
@@ -126,10 +127,13 @@ public class GenericNodeEnricherIT  {
         List<String> pids = fedora.findObjectFromDCIdentifier(label);
         String pid = pids.get(0);
         NodeEnricherFactory factory = new NodeEnricherFactory(fedora);
-        AbstractNodeEnricher enricher = factory.getNodeEnricher(NodeType.BATCH);
         NodeBeginsParsingEvent event = new NodeBeginsParsingEvent(BATCH_ID, pid);
-        enricher.enrich(event);
-        assertTrue(hasRelation(pid, HAS_MODEL, ROUNDTRIP_MODEL));
+        TreeNodeWithChildren node = new TreeNodeWithChildren(event.getName(), NodeType.BATCH, null, event.getLocation());
+        AbstractNodeEnricher enricher = factory.getNodeEnricher(node);
+        List<String> contentModels = enricher.getAllContentModels();
+        assertTrue(contentModels.contains("ContentModel_RoundTrip"), contentModels.toString());
+        String relsExtXml = enricher.getRelsExt(event);
+        assertTrue(relsExtXml.contains("hasPart"));
     }
 
     private boolean hasRelation(String pid, String predicate, String object) throws BackendInvalidCredsException, BackendMethodFailedException, BackendInvalidResourceException {

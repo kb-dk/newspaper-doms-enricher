@@ -18,8 +18,6 @@ public abstract class AbstractNodeEnricher {
 
     static Logger logger = LoggerFactory.getLogger(AbstractNodeEnricher.class);
 
-    private final String HAS_MODEL = "info:fedora/fedora-system:def/model#hasModel";
-
     protected final String domsNS = "doms:";
     private final String contentModelDoms = domsNS + "ContentModel_DOMS";
 
@@ -34,44 +32,20 @@ public abstract class AbstractNodeEnricher {
         this.fedora = fedora;
     }
 
-    /**
-     * Enrich the object corresponding to the given event.
-     * @param event the event corresponding to a DOMS object to be enriched.
-     * @throws BackendInvalidCredsException
-     * @throws BackendMethodFailedException
-     * @throws BackendInvalidResourceException
-     */
-    public void enrich(ParsingEvent event) throws BackendInvalidCredsException, BackendMethodFailedException, BackendInvalidResourceException {
-        logger.debug("Enriching " + event.getName());
-        List<String> contentModels = new ArrayList<>();
-        contentModels.addAll(getAdditionalContentModels());
-        contentModels.add(contentModelDoms);
-        logger.debug("Adding {} content models to {} at {}.", contentModels.size(), event.getName(), event.getLocation());
-        for (String contentModel: contentModels) {
-            String message = "Added by " + this.getClass().getSimpleName();
-            logger.debug("Adding triple ({}, {}, {})", event.getLocation(), HAS_MODEL, contentModel);
-            fedora.addRelation(event.getLocation(), null, HAS_MODEL, contentModel, false, message);
+    public String getRelsExt(ParsingEvent event) {
+        try {
+            return fedora.getXMLDatastreamContents(event.getLocation(), "RELS-EXT");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
-    /**
-     * Returns a String representing a list of xml elements like
-     * <hasModel xmlns="info:fedora/fedora-system:def/model#" rdf:resource="info:fedora/doms:ContentModel_RoundTrip"></hasModel>
-     * <hasModel xmlns="info:fedora/fedora-system:def/model#" rdf:resource="info:fedora/doms:ContentModel_DOMS"></hasModel>
-     * which can be added to the xml representation of the RELS-EXT datastream.
-     * @return
-     */
-    public String getRelsExtFragment() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("<hasModel xmlns=\"info:fedora/fedora-system:def/model#\" rdf:resource=\"info:fedora/doms:ContentModel_DOMS\"></hasModel>");
-        builder.append("\n");
-        for (String contentModel: getAdditionalContentModels()) {
-            builder.append("<hasModel xmlns=\"info:fedora/fedora-system:def/model#\" rdf:resource=\"info:fedora/");
-            builder.append(contentModel);
-            builder.append("\"></hasModel>");
-            builder.append("\n");
+    public void updateRelsExt(ParsingEvent event, String relsExtXml) {
+        try {
+            fedora.modifyDatastreamByValue(event.getLocation(), "RELS-EXT", relsExtXml, new ArrayList<String>(), "");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return builder.toString();
     }
 
     /**
@@ -80,5 +54,12 @@ public abstract class AbstractNodeEnricher {
      * @return
      */
     protected abstract List<String> getAdditionalContentModels();
+
+    public List<String> getAllContentModels() {
+        List<String> allContentModels = new ArrayList<>();
+        allContentModels.add(contentModelDoms);
+        allContentModels.addAll(getAdditionalContentModels());
+        return allContentModels;
+    }
 
 }

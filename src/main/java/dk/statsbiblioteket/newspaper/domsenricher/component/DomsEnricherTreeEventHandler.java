@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
+import dk.statsbibliokeket.newspaper.treenode.NodeType;
+import dk.statsbibliokeket.newspaper.treenode.TreeNode;
 import dk.statsbibliokeket.newspaper.treenode.TreeNodeStateWithChildren;
 import dk.statsbibliokeket.newspaper.treenode.TreeNodeWithChildren;
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
@@ -12,7 +14,10 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsPa
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
 import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.AbstractNodeEnricher;
+import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.EditionPageEnricher;
+import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.MissingPageEnricher;
 import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricherFactory;
+import dk.statsbiblioteket.newspaper.domsenricher.component.util.RdfManipulator;
 import dk.statsbiblioteket.newspaper.treenode.TreeNodeState;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
@@ -48,18 +53,12 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
      */
     @Override
     public void processNodeEnd(NodeEndParsingEvent event) {
-
-        final AbstractNodeEnricher nodeEnricher = nodeEnricherFactory.getNodeEnricher(getCurrentNode().getType());
-        try {
-            nodeEnricher.enrich(event);
-        } catch (Exception e) {
-            resultCollector.addFailure(event.getName(), "exception", DomsEnricherComponent.class.getSimpleName(), e.getMessage());
-        }
-        String contentModelXml = nodeEnricher.getRelsExtFragment();
-        StringBuilder childRelationships = new StringBuilder();
-        childRelationships.append(contentModelXml);
+        AbstractNodeEnricher nodeEnricher = nodeEnricherFactory.getNodeEnricher((TreeNodeWithChildren) getCurrentNode());
+        String relsExtXml = nodeEnricher.getRelsExt(event);
+        RdfManipulator rdfManipulator = new RdfManipulator(relsExtXml);
         List<TreeNodeWithChildren> children = ((TreeNodeWithChildren) getCurrentNode()).getChildren();
         for (TreeNodeWithChildren childNode: children) {
+            String pid = childNode.getLocation();
             String elementName = null;
             switch (childNode.getType()) {
                 case BATCH:
@@ -104,29 +103,13 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
                     elementName = "hasFile";
                     break;
             }
-            if (elementName != null) {
-                childRelationships.append("<");
-                childRelationships.append(elementName);
-                childRelationships.append(" xmlns=\"info:fedora/fedora-system:def/relations-external#\" rdf:resource=\"info:fedora/");
-                childRelationships.append(childNode.getLocation());
-                childRelationships.append("\"/>\n");
-            }
+            rdfManipulator.addExternalRelation(elementName, pid );
         }
-        logger.debug("Should add rdf\n" + childRelationships.toString());
-        try {
-            //Replace with DOM manipulation that adds one node at a time.
-            /*String relsExtXmlString = fedora.getXMLDatastreamContents(event.getLocation(), "RELS-EXT");
-            Document relsExtDocument = DOM.stringToDOM(relsExtXmlString);
-            Node rdfFragment = DOM.stringToDOM(childRelationships.toString());
-            relsExtDocument.importNode(rdfFragment, true);
-            String xpath = "RDF/Description";
-            XPathSelector xPathSelector = DOM.createXPathSelector();
-            Node descriptionNode = xPathSelector.selectNode(relsExtDocument, xpath);
-            descriptionNode.appendChild(rdfFragment);
-            logger.debug("new rdf:\n" + DOM.domToString(relsExtDocument));*/
-        } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        for (String contentModel: nodeEnricher.getAllContentModels()) {
+            rdfManipulator.addContentModel(contentModel);
         }
+        logger.debug("Writing rdf for {}:\n{}", event.getLocation(), rdfManipulator);
+        nodeEnricher.updateRelsExt(event, rdfManipulator.toString());
     }
 
 }
