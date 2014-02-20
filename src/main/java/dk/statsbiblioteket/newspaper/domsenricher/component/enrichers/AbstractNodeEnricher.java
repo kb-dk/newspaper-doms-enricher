@@ -19,7 +19,7 @@ public abstract class AbstractNodeEnricher {
     static Logger logger = LoggerFactory.getLogger(AbstractNodeEnricher.class);
 
     protected final String domsNS = "doms:";
-    private final String contentModelDoms = domsNS + "ContentModel_DOMS";
+    private final String contentModelDoms = "ContentModel_DOMS";
 
 
     private EnhancedFedora fedora;
@@ -50,7 +50,8 @@ public abstract class AbstractNodeEnricher {
 
     /**
      * Return a list of all content models to be added to objects by this enricher, in addition to
-     * "ContentModel_DOMS" which is added to all objects.
+     * "ContentModel_DOMS" which is added to all objects. The "doms:" prefix is not included in the
+     * returned value.
      * @return
      */
     protected abstract List<String> getAdditionalContentModels();

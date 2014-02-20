@@ -5,7 +5,6 @@ import dk.statsbibliokeket.newspaper.treenode.TreeNodeWithChildren;
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidResourceException;
 import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
-import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedoraImpl;
 import dk.statsbiblioteket.doms.central.connectors.fedora.pidGenerator.PIDGeneratorException;
 import dk.statsbiblioteket.doms.central.connectors.fedora.structures.FedoraRelation;
@@ -14,7 +13,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ConfigConstants;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
-import dk.statsbiblioteket.newspaper.domsenricher.component.RecursiveFedoraCleaner;
+import dk.statsbiblioteket.newspaper.domsenricher.component.util.RecursiveFedoraCleaner;
 import dk.statsbiblioteket.newspaper.promptdomsingester.component.RunnablePromptDomsIngester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +115,7 @@ public class GenericNodeEnricherIT  {
        private void cleanRoundtripFromDoms() throws Exception {
            String label = "path:" + batch.getFullID();
            logger.debug("Cleaning up from '" + label + "'");
-           RecursiveFedoraCleaner.cleanFedora(fedora, label, true);
+           (new RecursiveFedoraCleaner(fedora)).visitTree(label, true);
        }
 
 

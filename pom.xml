@@ -43,7 +43,7 @@
         <dependency>
             <groupId>dk.statsbiblioteket.doms.central</groupId>
             <artifactId>centralWebservice-lib</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>

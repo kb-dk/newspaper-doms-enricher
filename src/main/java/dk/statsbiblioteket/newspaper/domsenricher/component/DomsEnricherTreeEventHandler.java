@@ -106,7 +106,7 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
             rdfManipulator.addExternalRelation(elementName, pid );
         }
         for (String contentModel: nodeEnricher.getAllContentModels()) {
-            rdfManipulator.addContentModel(contentModel);
+            rdfManipulator.addContentModel("doms:" + contentModel);
         }
         logger.debug("Writing rdf for {}:\n{}", event.getLocation(), rdfManipulator);
         nodeEnricher.updateRelsExt(event, rdfManipulator.toString());

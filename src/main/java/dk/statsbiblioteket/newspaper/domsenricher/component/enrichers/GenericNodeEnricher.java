@@ -22,7 +22,7 @@ public class GenericNodeEnricher extends AbstractNodeEnricher {
         super(fedora);
         contentModels = new ArrayList<>();
         if (contentModelName != null) {
-            contentModels.add(domsNS + contentModelName);
+            contentModels.add(contentModelName);
         }
     }
 

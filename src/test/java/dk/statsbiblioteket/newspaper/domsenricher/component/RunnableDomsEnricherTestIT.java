@@ -1,11 +1,18 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
+import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
+import dk.statsbiblioteket.doms.central.connectors.BackendInvalidResourceException;
+import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedoraImpl;
+import dk.statsbiblioteket.doms.central.connectors.fedora.generated.Validation;
 import dk.statsbiblioteket.doms.central.connectors.fedora.pidGenerator.PIDGeneratorException;
 import dk.statsbiblioteket.doms.webservices.authentication.Credentials;
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ConfigConstants;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
+import dk.statsbiblioteket.newspaper.domsenricher.component.util.RecursiveFedoraCleaner;
+import dk.statsbiblioteket.newspaper.domsenricher.component.util.RecursiveFedoraValidator;
+import dk.statsbiblioteket.newspaper.domsenricher.component.util.RecursiveFedoraVisitor;
 import dk.statsbiblioteket.newspaper.promptdomsingester.component.RunnablePromptDomsIngester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +30,7 @@ import java.util.Properties;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 /**
  *
@@ -56,7 +64,7 @@ public class RunnableDomsEnricherTestIT {
 
     @AfterMethod(alwaysRun=true)
     public void tearDown() throws Exception {
-        cleanRoundtripFromDoms();
+       //cleanRoundtripFromDoms();
     }
 
     private void generateTestBatch() throws IOException, InterruptedException {
@@ -99,12 +107,12 @@ public class RunnableDomsEnricherTestIT {
     private void cleanRoundtripFromDoms() throws Exception {
         String label = "path:" + batch.getFullID();
         logger.debug("Cleaning up from '" + label + "'");
-        RecursiveFedoraCleaner.cleanFedora(fedora, label, true);
+        (new RecursiveFedoraCleaner(fedora)).visitTree(label, true);
     }
 
 
     /**
-     * Full recursive enrichment of a (medium) batch.
+     * Full enrichment of a (medium) batch.
      * @throws Exception
      */
     @Test(groups = "integrationTest")
@@ -114,5 +122,10 @@ public class RunnableDomsEnricherTestIT {
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
         enricher.doWorkOnBatch(batch, resultCollector);
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
+        RecursiveFedoraVisitor<Validation> validator = new RecursiveFedoraValidator(fedora);
+        //Map<String, Validation> validationMap = null;
+        //validationMap = validator.visitTree("path:" + batch.getFullID(), true);
+        //assertTrue(validationMap.size()>10);
+        cleanRoundtripFromDoms();
     }
 }
