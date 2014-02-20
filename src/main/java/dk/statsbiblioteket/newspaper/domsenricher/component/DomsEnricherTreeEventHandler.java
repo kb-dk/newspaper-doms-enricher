@@ -32,12 +32,12 @@ import java.util.List;
  * A tree handler which enriches each node with the relevant content models.
  */
 public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
-
     private static Logger logger = LoggerFactory.getLogger(DomsEnricherTreeEventHandler.class);
 
     private ResultCollector resultCollector;
     private NodeEnricherFactory nodeEnricherFactory;
     private EnhancedFedora fedora;
+
 
     public DomsEnricherTreeEventHandler(EnhancedFedora fedora, ResultCollector resultCollector) {
         nodeEnricherFactory = new NodeEnricherFactory(fedora);
@@ -53,16 +53,19 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
      */
     @Override
     public void processNodeEnd(NodeEndParsingEvent event) {
-        AbstractNodeEnricher nodeEnricher = nodeEnricherFactory.getNodeEnricher((TreeNodeWithChildren) getCurrentNode());
+        AbstractNodeEnricher nodeEnricher = nodeEnricherFactory.getNodeEnricher((TreeNodeWithChildren)getCurrentNode());
         String relsExtXml = nodeEnricher.getRelsExt(event);
+
         RdfManipulator rdfManipulator = new RdfManipulator(relsExtXml);
-        List<TreeNodeWithChildren> children = ((TreeNodeWithChildren) getCurrentNode()).getChildren();
+
+        List<TreeNodeWithChildren> children = ((TreeNodeWithChildren)getCurrentNode()).getChildren();
         for (TreeNodeWithChildren childNode: children) {
             String pid = childNode.getLocation();
             String elementName = null;
             switch (childNode.getType()) {
                 case BATCH:
-                    throw new IllegalStateException("Unexpectedly found a batch node" + childNode.getName() + "as the child of " +  event.getName());
+                    throw new IllegalStateException("Unexpectedly found a batch node" + childNode.getName() + "as the child of "
+                            +  event.getName());
                 case WORKSHIFT_ISO_TARGET:
                     elementName = "hasWorkshift";
                     break;
@@ -103,8 +106,11 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
                     elementName = "hasFile";
                     break;
             }
-            rdfManipulator.addExternalRelation(elementName, pid );
+            // For each child node of the current node, make sure they are still children of the replacement node, and with proper
+            // relation types
+            rdfManipulator.addExternalRelation(elementName, pid);
         }
+        // For each content model of the current node, make sure they are still in the replacement node
         for (String contentModel: nodeEnricher.getAllContentModels()) {
             rdfManipulator.addContentModel("doms:" + contentModel);
         }
