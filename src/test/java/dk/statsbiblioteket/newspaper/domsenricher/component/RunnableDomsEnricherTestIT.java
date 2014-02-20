@@ -123,9 +123,9 @@ public class RunnableDomsEnricherTestIT {
         enricher.doWorkOnBatch(batch, resultCollector);
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
         RecursiveFedoraVisitor<Validation> validator = new RecursiveFedoraValidator(fedora);
-        //Map<String, Validation> validationMap = null;
-        //validationMap = validator.visitTree("path:" + batch.getFullID(), true);
-        //assertTrue(validationMap.size()>10);
+        Map<String, Validation> validationMap = null;
+        validationMap = validator.visitTree("path:" + batch.getFullID(), true);
+        assertTrue(validationMap.size()>10);
         cleanRoundtripFromDoms();
     }
 }
