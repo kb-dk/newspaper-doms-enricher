@@ -44,7 +44,10 @@ public class RunnableDomsEnricher extends AbstractRunnableComponent{
     public void doWorkOnBatch(Batch batch, ResultCollector resultCollector) throws IOException {
         logger.debug("Beginning enrichment of " + batch.getFullID());
         List<TreeEventHandler> handlers = new ArrayList<>();
+
         handlers.add(new DomsEnricherTreeEventHandler(eFedora, resultCollector));
+        handlers.add(new DomsLabelEnricherTreeEventHandler(eFedora, resultCollector));
+
         EventRunner eventRunner = new EventRunner(createIterator(batch));
         eventRunner.runEvents(handlers, resultCollector);
     }
