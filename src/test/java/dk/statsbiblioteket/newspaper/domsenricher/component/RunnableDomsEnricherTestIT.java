@@ -4,6 +4,9 @@ import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidResourceException;
 import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedoraImpl;
+import dk.statsbiblioteket.doms.central.connectors.fedora.generated.Datastream;
+import dk.statsbiblioteket.doms.central.connectors.fedora.generated.DatastreamProblems;
+import dk.statsbiblioteket.doms.central.connectors.fedora.generated.Problems;
 import dk.statsbiblioteket.doms.central.connectors.fedora.generated.Validation;
 import dk.statsbiblioteket.doms.central.connectors.fedora.pidGenerator.PIDGeneratorException;
 import dk.statsbiblioteket.doms.webservices.authentication.Credentials;
@@ -25,6 +28,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -125,7 +129,31 @@ public class RunnableDomsEnricherTestIT {
         RecursiveFedoraVisitor<Validation> validator = new RecursiveFedoraValidator(fedora);
         Map<String, Validation> validationMap = null;
         validationMap = validator.visitTree("path:" + batch.getFullID(), true);
-        assertTrue(validationMap.size()>10);
-        cleanRoundtripFromDoms();
+        assertTrue(validationMap.size() > 10);
+        for (Map.Entry<String, Validation> entry: validationMap.entrySet()) {
+            String pid = entry.getKey();
+            Validation validation = entry.getValue();
+            Problems problems = validation.getProblems();
+            for (String problem: problems.getProblem()) {
+                if (!isKnown(problem)) {
+                    logger.debug("In {}: {}.", pid, problem);
+                }
+            }
+            DatastreamProblems datastreamProblems = validation.getDatastreamProblems();
+            List<Datastream> datastreams = datastreamProblems.getDatastream();
+            for (Datastream datastream: datastreams) {
+                for (String problem: datastream.getProblem() ) {
+                    if (!isKnown(problem)) {
+                        logger.debug("In {}/datastreams/{}: {}", pid, datastream.getDatastreamID(), problem);
+                    }
+                }
+            }
+        }
+       cleanRoundtripFromDoms();
     }
+
+    private boolean isKnown(String problem) {
+        return problem.contains("MIME") || problem.contains("hasLicense");
+    }
+
 }

@@ -73,7 +73,7 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
                     elementName = "hasPage";
                     break;
                 case TARGET_IMAGE:
-                    elementName = "hasPage";
+                    elementName = "hasFile";
                     break;
                 case FILM:
                     elementName = "hasFilm";

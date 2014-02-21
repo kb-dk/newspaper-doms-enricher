@@ -18,7 +18,7 @@ public class RdfManipulator {
             + "rdf:resource=\"info:fedora/PID\"/>";
 
     public static final String EXTERNAL_RELATION_TEMPLATE = "<NAME xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "
-            + "xmlns=\"info:fedora/fedora-system:def/relations-external#\" "
+            + "xmlns=\"http://doms.statsbiblioteket.dk/relations/default/0/1/#\" "
             + "rdf:resource=\"info:fedora/PID\"/>";
 
     public static final XPathSelector X_PATH_SELECTOR = DOM.createXPathSelector(
