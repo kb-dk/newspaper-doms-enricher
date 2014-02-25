@@ -153,7 +153,7 @@ public class RunnableDomsEnricherTestIT {
     }
 
     private boolean isKnown(String problem) {
-        return problem.contains("MIME") || problem.contains("hasLicense");
+        return problem.contains("hasLicense");
     }
 
 }

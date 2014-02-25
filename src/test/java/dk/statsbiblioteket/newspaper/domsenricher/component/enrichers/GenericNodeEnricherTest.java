@@ -43,6 +43,6 @@ public class GenericNodeEnricherTest {
         TreeNodeWithChildren treeNodeWithChildren = new TreeNodeWithChildren(event.getName(), NodeType.BATCH, null, event.getLocation());
         AbstractNodeEnricher enricher = factory.getNodeEnricher(treeNodeWithChildren);
         List<String> contentModels = enricher.getAllContentModels();
-        assertTrue(contentModels.contains("doms:ContentModel_RoundTrip"), contentModels.toString());
+        assertTrue(contentModels.contains("ContentModel_RoundTrip"), contentModels.toString());
     }
 }
