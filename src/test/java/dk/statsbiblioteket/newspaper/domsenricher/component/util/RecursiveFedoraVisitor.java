@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * Generified visitor which can recurse of a tree of objects ingested via prompt-doms-ingester.
  */
 public abstract class RecursiveFedoraVisitor<T> {
 
@@ -31,11 +31,13 @@ public abstract class RecursiveFedoraVisitor<T> {
     }
 
     /**
-     * Recursively visits fedora of every object with the given label and every object reachable
-     * from them via a hasPart relation.
+     * Recursively visits every object with the given label and every object reachable
+     * from them via a hasPart relation. The descendants of a given object are always
+     * determined before the object itself is processed.
      * @param label the label of the root objects to be visited.
      * @param doit boolean to be passed on to visitObject method which can be used to tell the
      *             method whether or not to actually carry out the operation.
+     * @return a map listing all the pids visited with the result of the visit.
      */
     public Map<String, T> visitTree(String label, boolean doit) throws BackendInvalidCredsException, BackendMethodFailedException, BackendInvalidResourceException {
         List<String> pids = fedora.findObjectFromDCIdentifier(label);
@@ -58,6 +60,15 @@ public abstract class RecursiveFedoraVisitor<T> {
         return results;
     }
 
+    /**
+     * Method used by implementing classes to carry out the actual behaviour of the visit.
+     * @param pid the pid of the object.
+     * @param doit Whether or not to carry out the operation.
+     * @return the result of the visit.
+     * @throws BackendInvalidCredsException
+     * @throws BackendMethodFailedException
+     * @throws BackendInvalidResourceException
+     */
     protected abstract T visitObject(String pid, boolean doit)
             throws BackendInvalidCredsException, BackendMethodFailedException, BackendInvalidResourceException;
 

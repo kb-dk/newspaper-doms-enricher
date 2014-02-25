@@ -23,10 +23,14 @@ public class RdfManipulatorTest {
             "  </rdf:Description>\n" +
             "</rdf:RDF>";
 
+    /**
+     * Test that we can use the class to convert back and forward to a String representation.
+     */
     @Test
     public void testIO() {
         RdfManipulator rdfManipulator = new RdfManipulator(rdf1);
         String output = rdfManipulator.toString();
+        RdfManipulator rdfManipulator1 = new RdfManipulator(output);
         logger.debug("\n" + output);
     }
 

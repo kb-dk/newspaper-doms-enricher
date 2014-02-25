@@ -32,9 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 /**
  *
@@ -129,13 +127,14 @@ public class RunnableDomsEnricherTestIT {
         RecursiveFedoraVisitor<Validation> validator = new RecursiveFedoraValidator(fedora);
         Map<String, Validation> validationMap = null;
         validationMap = validator.visitTree("path:" + batch.getFullID(), true);
-        assertTrue(validationMap.size() > 10);
+        int unknownProblems = 0;
         for (Map.Entry<String, Validation> entry: validationMap.entrySet()) {
             String pid = entry.getKey();
             Validation validation = entry.getValue();
             Problems problems = validation.getProblems();
             for (String problem: problems.getProblem()) {
                 if (!isKnown(problem)) {
+                    unknownProblems++;
                     logger.debug("In {}: {}.", pid, problem);
                 }
             }
@@ -144,16 +143,25 @@ public class RunnableDomsEnricherTestIT {
             for (Datastream datastream: datastreams) {
                 for (String problem: datastream.getProblem() ) {
                     if (!isKnown(problem)) {
+                        unknownProblems++;
                         logger.debug("In {}/datastreams/{}: {}", pid, datastream.getDatastreamID(), problem);
                     }
                 }
             }
         }
-       cleanRoundtripFromDoms();
+        assertEquals(unknownProblems, 0, "Require that there should be no unknown problems.");
+        cleanRoundtripFromDoms();
     }
 
+    /**
+     * Problems which are known and which are assumed to be either unimportant or being dealt with elsewhere.
+     * @param problem
+     * @return
+     */
     private boolean isKnown(String problem) {
-        return problem.contains("hasLicense");
+        return problem.contains("hasLicense") ||
+                (problem.contains("EVENTS") && problem.contains("RoundTrip")) ||
+                (problem.contains("FILM") && problem.contains("schema"));
     }
 
 }

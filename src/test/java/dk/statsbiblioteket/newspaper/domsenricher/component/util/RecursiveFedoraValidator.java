@@ -7,7 +7,7 @@ import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.doms.central.connectors.fedora.generated.Validation;
 
 /**
- * Created by csr on 20/02/14.
+ *
  */
 public class RecursiveFedoraValidator extends RecursiveFedoraVisitor<Validation> {
 
@@ -15,6 +15,15 @@ public class RecursiveFedoraValidator extends RecursiveFedoraVisitor<Validation>
         super(fedora);
     }
 
+    /**
+     * Validate an object.
+     * @param pid the object to validate.
+     * @param doit ignored.
+     * @return the result of the validation.
+     * @throws BackendInvalidCredsException
+     * @throws BackendMethodFailedException
+     * @throws BackendInvalidResourceException
+     */
     @Override
     protected Validation visitObject(String pid, boolean doit) throws BackendInvalidCredsException, BackendMethodFailedException, BackendInvalidResourceException {
         return fedora.validate(pid);

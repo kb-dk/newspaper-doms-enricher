@@ -4,12 +4,8 @@ import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
 import dk.statsbiblioteket.doms.central.connectors.BackendInvalidResourceException;
 import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
-import dk.statsbiblioteket.doms.central.connectors.fedora.structures.FedoraRelation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -22,8 +18,14 @@ public class RecursiveFedoraCleaner extends RecursiveFedoraVisitor<Boolean> {
         super(fedora);
     }
 
-
-    public Boolean visitObject(String pid, boolean doit) throws BackendInvalidCredsException, BackendMethodFailedException, BackendInvalidResourceException {
+    /**
+     * Delete the given object from fedora.
+     * @param pid the pid of the object.
+     * @param doit whether or not to really delete the object.
+     * @return whether or not the object was actually deleted.
+     */
+    @Override
+    public Boolean visitObject(String pid, boolean doit)  {
         log.info("About to delete object '" + pid + "'");
         if (doit) {
             try {
@@ -39,7 +41,7 @@ public class RecursiveFedoraCleaner extends RecursiveFedoraVisitor<Boolean> {
        return true;
     }
 
-    public void deleteSingleObject(String pid) throws BackendInvalidCredsException, BackendMethodFailedException, BackendInvalidResourceException {
+    private void deleteSingleObject(String pid) throws BackendInvalidCredsException, BackendMethodFailedException, BackendInvalidResourceException {
         fedora.deleteObject(pid, "Deleted in integration test");
     }
 

@@ -7,7 +7,7 @@ import org.w3c.dom.Node;
 import javax.xml.transform.TransformerException;
 
 /**
- *
+ * Simple class for manipulating xml representation of rdf datastream.
  */
 public class RdfManipulator {
     Document document;
@@ -27,11 +27,19 @@ public class RdfManipulator {
             "relsExt", "info:fedora/fedora-system:def/relations-external#"
     );
 
+    /**
+     * CTOR for the class
+     * @param xml String representation of the rdf datastream,
+     */
     public RdfManipulator(String xml) {
         document = DOM.stringToDOM(xml, true);
         rdfDescriptionNode = X_PATH_SELECTOR.selectNode(document, "//rdf:Description");
     }
 
+    /**
+     * Returns the rdf datastream xml as a String.
+     * @return the manipulated datastream.
+     */
     @Override
     public String toString() {
         try {
@@ -63,7 +71,8 @@ public class RdfManipulator {
     /**
      * Adds a new named relation from this object to another object, e.g.
      * <hasPart xmlns="info:fedora/fedora-system:def/relations-external#" rdf:resource="info:fedora/uuid:05d840bf-8bb6-48e5-b214-2ab39f6259f8"/>
-     * @param predicateName the name of the relation, e.g. "hasPart"
+     * The is assumed to have the prefix "http://doms.statsbiblioteket.dk/relations/default/0/1/#"
+     * @param predicateName the short name of the relation, e.g. "hasPart"
      * @param objectPid the full doms pid of the object of the relation, e.g. "uuid:05d840bf-8bb6-48e5-b214-2ab39f6259f8"
      */
     public void addExternalRelation(String predicateName, String objectPid) {

@@ -29,7 +29,7 @@ import org.w3c.dom.Node;
 import java.util.List;
 
 /**
- * A tree handler which enriches each node with the relevant content models.
+ * A tree handler which enriches each node with the relevant content models and relations.
  */
 public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
     private static Logger logger = LoggerFactory.getLogger(DomsEnricherTreeEventHandler.class);
@@ -47,18 +47,30 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
 
 
     /**
-     * Does the actual enrichment by adding all necessary relationships to child-nodes, content-models,
-     * and licenses (?).
+     * Does the actual enrichment by adding all necessary relationships to child-nodes and content-models.
      * @param event the event identifying this node.
      */
     @Override
     public void processNodeEnd(NodeEndParsingEvent event) {
-        AbstractNodeEnricher nodeEnricher = nodeEnricherFactory.getNodeEnricher((TreeNodeWithChildren)getCurrentNode());
+        AbstractNodeEnricher nodeEnricher = nodeEnricherFactory.getNodeEnricher((TreeNodeWithChildren) getCurrentNode());
         String relsExtXml = nodeEnricher.getRelsExt(event);
-
         RdfManipulator rdfManipulator = new RdfManipulator(relsExtXml);
+        addParentChildRelations(event, rdfManipulator);
+        addContentModels(nodeEnricher, rdfManipulator);
+        logger.debug("Writing rdf for {}:\n{}", event.getLocation(), rdfManipulator);
+        //Finally write the new RELS-EXT back to DOMS.
+        nodeEnricher.updateRelsExt(event, rdfManipulator.toString());
+    }
 
-        List<TreeNodeWithChildren> children = ((TreeNodeWithChildren)getCurrentNode()).getChildren();
+    private void addContentModels(AbstractNodeEnricher nodeEnricher, RdfManipulator rdfManipulator) {
+        for (String contentModel: nodeEnricher.getAllContentModels()) {
+            rdfManipulator.addContentModel("doms:" + contentModel);
+        }
+    }
+
+    private void addParentChildRelations(NodeEndParsingEvent event, RdfManipulator rdfManipulator) {
+        //Iterate through the child nodes, adding relevant relations.
+        List<TreeNodeWithChildren> children = ((TreeNodeWithChildren) getCurrentNode()).getChildren();
         for (TreeNodeWithChildren childNode: children) {
             String pid = childNode.getLocation();
             String elementName = null;
@@ -106,16 +118,8 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
                     elementName = "hasFile";
                     break;
             }
-            // For each child node of the current node, make sure they are still children of the replacement node, and with proper
-            // relation types
             rdfManipulator.addExternalRelation(elementName, pid);
         }
-        // For each content model of the current node, make sure they are still in the replacement node
-        for (String contentModel: nodeEnricher.getAllContentModels()) {
-            rdfManipulator.addContentModel("doms:" + contentModel);
-        }
-        logger.debug("Writing rdf for {}:\n{}", event.getLocation(), rdfManipulator);
-        nodeEnricher.updateRelsExt(event, rdfManipulator.toString());
     }
 
 }

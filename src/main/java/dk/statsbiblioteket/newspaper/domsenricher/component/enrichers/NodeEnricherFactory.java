@@ -59,6 +59,9 @@ public class NodeEnricherFactory {
      * @return the enricher.
      */
     public AbstractNodeEnricher getNodeEnricher(TreeNodeWithChildren treeNode) {
+        //GenericNodeEnricher is used for all non-Page nodes. For Page nodes
+        //the logic is slightly more complex depending on which type of page
+        //we are on and whether the page actually has a corresponding scan.
         if (!treeNode.getType().equals(NodeType.PAGE)) {
             return getNodeEnricher(treeNode.getType());
         } else {

@@ -32,6 +32,11 @@ public abstract class AbstractNodeEnricher {
         this.fedora = fedora;
     }
 
+    /**
+     * Get the current version of the RELS-EXT datastream corresponding to an event.
+     * @param event the Event.
+     * @return the datastream.
+     */
     public String getRelsExt(ParsingEvent event) {
         try {
             return fedora.getXMLDatastreamContents(event.getLocation(), "RELS-EXT");
@@ -40,9 +45,22 @@ public abstract class AbstractNodeEnricher {
         }
     }
 
+    /**
+     * Update the RELS-EXT datastream corresponding to an event.
+     * @param event the Event.
+     * @param relsExtXml the new datastream contents.
+     */
     public void updateRelsExt(ParsingEvent event, String relsExtXml) {
         try {
-            fedora.modifyDatastreamByValue(event.getLocation(), "RELS-EXT", relsExtXml, new ArrayList<String>(), "");
+            fedora.modifyDatastreamByValue(event.getLocation(),
+                    "RELS-EXT",
+                    null,
+                    null,
+                    relsExtXml.getBytes(),
+                    new ArrayList<String>(),
+                    "application/rdf+xml",
+                    "Modified by " + getClass().getSimpleName(),
+                    null);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -56,6 +74,12 @@ public abstract class AbstractNodeEnricher {
      */
     protected abstract List<String> getAdditionalContentModels();
 
+     /**
+     * Return a list of all content models to be added to objects by this enricher, including
+     * "ContentModel_DOMS" which is added to all objects. The "doms:" prefix is not included in the
+     * returned value.
+     * @return
+     */
     public List<String> getAllContentModels() {
         List<String> allContentModels = new ArrayList<>();
         allContentModels.add(contentModelDoms);
