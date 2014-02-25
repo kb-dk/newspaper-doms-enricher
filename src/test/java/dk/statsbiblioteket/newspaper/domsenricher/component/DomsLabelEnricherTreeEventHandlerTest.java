@@ -1,24 +1,13 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
-import dk.statsbibliokeket.newspaper.treenode.NodeType;
-import dk.statsbibliokeket.newspaper.treenode.TreeNodeWithChildren;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
-import dk.statsbiblioteket.doms.central.connectors.fedora.structures.ObjectProfile;
-import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.ParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
-import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.AbstractNodeEnricher;
-import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricherFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.List;
-
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.assertTrue;
 
 /**
  *
@@ -37,7 +26,7 @@ public class DomsLabelEnricherTreeEventHandlerTest {
 
     @Test
     public void testprocessNodeEndPage() throws Exception {
-        TreeEventHandler labelHandler = new DomsLabelEnricherTreeEventHandler(fedora, resultCollector);
+        TreeEventHandler labelHandler = new DomsLabelEnricherTreeEventHandler(fedora);
 
         labelHandler.handleNodeBegin(new NodeBeginsParsingEvent("batch1"));
         labelHandler.handleNodeBegin(new NodeBeginsParsingEvent("film1"));
