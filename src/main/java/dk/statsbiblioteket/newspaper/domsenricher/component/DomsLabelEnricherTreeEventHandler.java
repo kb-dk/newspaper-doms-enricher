@@ -1,31 +1,21 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
 import dk.statsbibliokeket.newspaper.treenode.TreeNodeStateWithChildren;
-import dk.statsbibliokeket.newspaper.treenode.TreeNodeWithChildren;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
-import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
-import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.AbstractNodeEnricher;
-import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricherFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
  *
  */
 public class DomsLabelEnricherTreeEventHandler extends TreeNodeStateWithChildren {
-    private static Logger logger = LoggerFactory.getLogger(DomsEnricherTreeEventHandler.class);
-
-    private ResultCollector resultCollector;
-    private NodeEnricherFactory nodeEnricherFactory;
     private EnhancedFedora fedora;
 
-    public DomsLabelEnricherTreeEventHandler(EnhancedFedora fedora, ResultCollector resultCollector) {
-        nodeEnricherFactory = new NodeEnricherFactory(fedora);
-        this.resultCollector = resultCollector;
+
+    public DomsLabelEnricherTreeEventHandler(EnhancedFedora fedora) {
         this.fedora = fedora;
     }
+
 
     /**
      *
