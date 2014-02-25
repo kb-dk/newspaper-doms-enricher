@@ -33,56 +33,53 @@ public class DomsLabelEnricherTreeEventHandler extends TreeNodeStateWithChildren
      */
     @Override
     public void processNodeEnd(NodeEndParsingEvent event) {
-        AbstractNodeEnricher nodeEnricher = nodeEnricherFactory.getNodeEnricher((TreeNodeWithChildren)getCurrentNode());
-        String relsExtXml = nodeEnricher.getRelsExt(event);
-
         String currentNodePid = getCurrentNode().getLocation();
         int lastSlashPosition = event.getName().lastIndexOf("/");
-        String nameOfNodeOrAttribute = event.getName().substring(lastSlashPosition + 1);
+        String nameOfNode = event.getName().substring(lastSlashPosition + 1);
 
         try {
             switch (getCurrentNode().getType()) {
                 case BATCH:
-                    fedora.modifyObjectLabel(currentNodePid, "batch-" + nameOfNodeOrAttribute, "");
+                    fedora.modifyObjectLabel(currentNodePid, "batch-" + nameOfNode, "");
                     break;
                 case WORKSHIFT_ISO_TARGET:
                     fedora.modifyObjectLabel(currentNodePid, "workshift-iso-target", "");
                     break;
                 case WORKSHIFT_TARGET:
-                    fedora.modifyObjectLabel(currentNodePid, "workshift-target-" + nameOfNodeOrAttribute, "");
+                    fedora.modifyObjectLabel(currentNodePid, "workshift-target-" + nameOfNode, "");
                     break;
                 case TARGET_IMAGE:
-                    fedora.modifyObjectLabel(currentNodePid, nameOfNodeOrAttribute, "");
+                    fedora.modifyObjectLabel(currentNodePid, nameOfNode, "");
                     break;
                 case FILM:
-                    fedora.modifyObjectLabel(currentNodePid, "film-" + nameOfNodeOrAttribute, "");
+                    fedora.modifyObjectLabel(currentNodePid, "film-" + nameOfNode, "");
                     break;
                 case FILM_ISO_TARGET:
                     fedora.modifyObjectLabel(currentNodePid, "film-iso-target", "");
                     break;
                 case FILM_TARGET:
-                    fedora.modifyObjectLabel(currentNodePid, "film-target-" + nameOfNodeOrAttribute, "");
+                    fedora.modifyObjectLabel(currentNodePid, "film-target-" + nameOfNode, "");
                     break;
                 case ISO_TARGET_IMAGE:
-                    fedora.modifyObjectLabel(currentNodePid, "iso-target-image-" + nameOfNodeOrAttribute, "");
+                    fedora.modifyObjectLabel(currentNodePid, "iso-target-image-" + nameOfNode, "");
                     break;
                 case UNMATCHED:
                     fedora.modifyObjectLabel(currentNodePid, "unmatched", "");
                     break;
                 case EDITION:
-                    fedora.modifyObjectLabel(currentNodePid, "edition-" + nameOfNodeOrAttribute, "");
+                    fedora.modifyObjectLabel(currentNodePid, "edition-" + nameOfNode, "");
                     break;
                 case PAGE:
-                    fedora.modifyObjectLabel(currentNodePid, "page-" + nameOfNodeOrAttribute, "");
+                    fedora.modifyObjectLabel(currentNodePid, "page-" + nameOfNode, "");
                     break;
                 case BRIK:
-                    fedora.modifyObjectLabel(currentNodePid, nameOfNodeOrAttribute, "");
+                    fedora.modifyObjectLabel(currentNodePid, nameOfNode, "");
                     break;
                 case BRIK_IMAGE:
-                    fedora.modifyObjectLabel(currentNodePid, "brik-image-" + nameOfNodeOrAttribute, "");
+                    fedora.modifyObjectLabel(currentNodePid, "brik-image-" + nameOfNode, "");
                     break;
                 case PAGE_IMAGE:
-                    fedora.modifyObjectLabel(currentNodePid, "page-image-" + nameOfNodeOrAttribute, "");
+                    fedora.modifyObjectLabel(currentNodePid, "page-image-" + nameOfNode, "");
                     break;
             }
         } catch (Exception e) {
