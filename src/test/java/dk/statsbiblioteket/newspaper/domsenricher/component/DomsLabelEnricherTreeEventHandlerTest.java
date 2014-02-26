@@ -23,6 +23,11 @@ public class DomsLabelEnricherTreeEventHandlerTest {
         resultCollector = new ResultCollector("blah", "blah");
     }
 
+    /*
+    * TODO Testing here can be improved by doing a test on a known structure (as it is done on a number of xml files in the mods
+    * metadata checker of newspaper-batch-metadata checker) - checking that it gives the expected labels on all levels.
+    * At the same time, this would work as a kind of documentation of how labels will end up looking.
+    */
 
     @Test
     public void testprocessNodeEndPage() throws Exception {
