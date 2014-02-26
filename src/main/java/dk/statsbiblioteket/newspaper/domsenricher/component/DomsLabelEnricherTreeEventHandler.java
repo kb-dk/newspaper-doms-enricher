@@ -4,20 +4,28 @@ import dk.statsbibliokeket.newspaper.treenode.TreeNodeStateWithChildren;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
- *
+ * Attaches somewhat descriptive labels to different types of nodes.
  */
 public class DomsLabelEnricherTreeEventHandler extends TreeNodeStateWithChildren {
     private EnhancedFedora fedora;
+    private String previousAvisID;
+    private String previousBrikName;
+    private String previousPageName;
 
 
     public DomsLabelEnricherTreeEventHandler(EnhancedFedora fedora) {
         this.fedora = fedora;
+        previousAvisID = "";
     }
 
 
     /**
+     * Sets the object label for the object at the current node, by a call to Fedora.
      *
      * @param event the event identifying this node.
      */
@@ -57,19 +65,29 @@ public class DomsLabelEnricherTreeEventHandler extends TreeNodeStateWithChildren
                     fedora.modifyObjectLabel(currentNodePid, "unmatched", "");
                     break;
                 case EDITION:
-                    fedora.modifyObjectLabel(currentNodePid, "edition-" + nameOfNode, "");
+                    fedora.modifyObjectLabel(currentNodePid, "edition-" + previousAvisID, "");
                     break;
                 case PAGE:
                     fedora.modifyObjectLabel(currentNodePid, "page-" + nameOfNode, "");
+                    previousPageName = nameOfNode;
+                    // Put aside AvisID for use later
+                    Pattern p = Pattern.compile("(.*)-[0-9]{4}(-[0-9]{2})?(-[0-9]{2})?-[0-9]{2}-[0-9]{4}[A-Za-z]?");
+                    Matcher m = p.matcher(nameOfNode);
+                    if (m.find()) {
+                        previousAvisID = m.group(1);
+                    } else {
+                        previousAvisID = "";
+                    }
                     break;
                 case BRIK:
                     fedora.modifyObjectLabel(currentNodePid, nameOfNode, "");
+                    previousBrikName = nameOfNode;
                     break;
                 case BRIK_IMAGE:
-                    fedora.modifyObjectLabel(currentNodePid, "brik-image-" + nameOfNode, "");
+                    fedora.modifyObjectLabel(currentNodePid, "brik-image-" + previousBrikName, "");
                     break;
                 case PAGE_IMAGE:
-                    fedora.modifyObjectLabel(currentNodePid, "page-image-" + nameOfNode, "");
+                    fedora.modifyObjectLabel(currentNodePid, "page-image-" + previousPageName, "");
                     break;
             }
         } catch (Exception e) {
