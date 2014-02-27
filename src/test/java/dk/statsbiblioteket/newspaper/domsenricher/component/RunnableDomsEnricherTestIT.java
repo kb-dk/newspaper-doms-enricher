@@ -161,9 +161,6 @@ public class RunnableDomsEnricherTestIT {
      * @return
      */
     private boolean isKnown(String problem) {
-        /*return problem.contains("hasLicense") ||
-                (problem.contains("EVENTS") && problem.contains("RoundTrip")) ||
-                (problem.contains("FILM") && problem.contains("schema"));*/
         return   (problem.contains("EVENTS") && problem.contains("RoundTrip")) ||
                        (problem.contains("FILM") && problem.contains("schema"));
     }
