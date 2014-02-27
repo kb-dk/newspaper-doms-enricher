@@ -73,52 +73,52 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
         List<TreeNodeWithChildren> children = ((TreeNodeWithChildren) getCurrentNode()).getChildren();
         for (TreeNodeWithChildren childNode: children) {
             String pid = childNode.getLocation();
-            String elementName = null;
+            String predicateName = null;
             switch (childNode.getType()) {
                 case BATCH:
                     throw new IllegalStateException("Unexpectedly found a batch node" + childNode.getName() + "as the child of "
                             +  event.getName());
                 case WORKSHIFT_ISO_TARGET:
-                    elementName = "hasWorkshift";
+                    predicateName = "hasWorkshift";
                     break;
                 case WORKSHIFT_TARGET:
-                    elementName = "hasPage";
+                    predicateName = "hasPage";
                     break;
                 case TARGET_IMAGE:
-                    elementName = "hasFile";
+                    predicateName = "hasFile";
                     break;
                 case FILM:
-                    elementName = "hasFilm";
+                    predicateName = "hasFilm";
                     break;
                 case FILM_ISO_TARGET:
-                    elementName = "hasIsoTarget";
+                    predicateName = "hasIsoTarget";
                     break;
                 case FILM_TARGET:
-                    elementName = "hasPage";
+                    predicateName = "hasPage";
                     break;
                 case ISO_TARGET_IMAGE:
-                    elementName = "hasFile";
+                    predicateName = "hasFile";
                     break;
                 case UNMATCHED:
-                    elementName = "hasPage";
+                    predicateName = "hasPage";
                     break;
                 case EDITION:
-                    elementName = "hasEdition";
+                    predicateName = "hasEdition";
                     break;
                 case PAGE:
-                    elementName = "hasPage";
+                    predicateName = "hasPage";
                     break;
                 case BRIK:
-                    elementName = "hasBrik";
+                    predicateName = "hasBrik";
                     break;
                 case BRIK_IMAGE:
-                    elementName = "hasFile";
+                    predicateName = "hasFile";
                     break;
                 case PAGE_IMAGE:
-                    elementName = "hasFile";
+                    predicateName = "hasFile";
                     break;
             }
-            rdfManipulator.addExternalRelation(elementName, pid);
+            rdfManipulator.addExternalRelation(predicateName, pid);
         }
     }
 

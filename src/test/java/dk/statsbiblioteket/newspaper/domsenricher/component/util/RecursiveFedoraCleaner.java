@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Class for recursively deleting a tree of doms objects by following "hasPart" relations.
  */
 public class RecursiveFedoraCleaner extends RecursiveFedoraVisitor<Boolean> {
 

@@ -46,12 +46,14 @@ public class RunnableDomsEnricherTestIT {
     private Batch batch;
     private Properties props;;
 
-    @BeforeMethod(alwaysRun = true)
+    @BeforeMethod(alwaysRun = true, groups = "externalTest")
     public void setUp() throws Exception, JAXBException, PIDGeneratorException {
         logger.debug("Doing setUp.");
         props = new Properties();
         try {
-            props.load(new FileReader(new File(System.getProperty("integration.test.newspaper.properties"))));
+            final String propsfile = System.getProperty("integration.test.newspaper.properties");
+            logger.debug("Loading properties from {}.", propsfile);
+            props.load(new FileReader(new File(propsfile)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -64,7 +66,7 @@ public class RunnableDomsEnricherTestIT {
         IngestRoundtripInDoms();
     }
 
-    @AfterMethod(alwaysRun=true)
+    @AfterMethod(alwaysRun=true, groups = "externalTest")
     public void tearDown() throws Exception {
        //cleanRoundtripFromDoms();
     }
@@ -117,7 +119,7 @@ public class RunnableDomsEnricherTestIT {
      * Full enrichment of a (medium) batch.
      * @throws Exception
      */
-    @Test(groups = "integrationTest")
+    @Test(groups = "externalTest")
     public void testDoWorkOnBatch() throws Exception {
         props.setProperty(ConfigConstants.ITERATOR_USE_FILESYSTEM, "false");
         RunnableDomsEnricher enricher = new RunnableDomsEnricher(props, fedora);
@@ -159,9 +161,11 @@ public class RunnableDomsEnricherTestIT {
      * @return
      */
     private boolean isKnown(String problem) {
-        return problem.contains("hasLicense") ||
+        /*return problem.contains("hasLicense") ||
                 (problem.contains("EVENTS") && problem.contains("RoundTrip")) ||
-                (problem.contains("FILM") && problem.contains("schema"));
+                (problem.contains("FILM") && problem.contains("schema"));*/
+        return   (problem.contains("EVENTS") && problem.contains("RoundTrip")) ||
+                       (problem.contains("FILM") && problem.contains("schema"));
     }
 
 }

@@ -6,9 +6,6 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertTrue;
 
-/**
- *
- */
 public class RdfManipulatorTest {
 
     private static Logger logger = LoggerFactory.getLogger(RdfManipulator.class);

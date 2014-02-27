@@ -7,7 +7,7 @@ import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.doms.central.connectors.fedora.generated.Validation;
 
 /**
- *
+ * Class for validating all fedora objects in a tree navigable via "hasPart" relations,
  */
 public class RecursiveFedoraValidator extends RecursiveFedoraVisitor<Validation> {
 
