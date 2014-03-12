@@ -1,32 +1,18 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
-import dk.statsbibliokeket.newspaper.treenode.NodeType;
-import dk.statsbibliokeket.newspaper.treenode.TreeNode;
-import dk.statsbibliokeket.newspaper.treenode.TreeNodeStateWithChildren;
-import dk.statsbibliokeket.newspaper.treenode.TreeNodeWithChildren;
-import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
-import dk.statsbiblioteket.doms.central.connectors.BackendInvalidResourceException;
-import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
-import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
-import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.AttributeParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
-import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.AbstractNodeEnricher;
-import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.EditionPageEnricher;
-import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.MissingPageEnricher;
-import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricherFactory;
-import dk.statsbiblioteket.newspaper.domsenricher.component.util.RdfManipulator;
-import dk.statsbiblioteket.newspaper.treenode.TreeNodeState;
-import dk.statsbiblioteket.util.xml.DOM;
-import dk.statsbiblioteket.util.xml.XPathSelector;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
-import java.util.List;
+import dk.statsbibliokeket.newspaper.treenode.TreeNodeStateWithChildren;
+import dk.statsbibliokeket.newspaper.treenode.TreeNodeWithChildren;
+import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
+import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
+import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.AbstractNodeEnricher;
+import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricherFactory;
+import dk.statsbiblioteket.newspaper.domsenricher.component.util.RdfManipulator;
 
 /**
  * A tree handler which enriches each node with the relevant content models and relations.
@@ -36,13 +22,11 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
 
     private ResultCollector resultCollector;
     private NodeEnricherFactory nodeEnricherFactory;
-    private EnhancedFedora fedora;
 
 
     public DomsEnricherTreeEventHandler(EnhancedFedora fedora, ResultCollector resultCollector) {
         nodeEnricherFactory = new NodeEnricherFactory(fedora);
         this.resultCollector = resultCollector;
-        this.fedora = fedora;
     }
 
 

@@ -1,7 +1,7 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
-import dk.statsbiblioteket.medieplatform.autonomous.AbstractRunnableComponent;
+import dk.statsbiblioteket.medieplatform.autonomous.SBOIBasedAbstractRunnableComponent;
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ConfigConstants;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
@@ -19,7 +19,7 @@ import java.util.Properties;
 /**
  * The runnable component for the DomsEnricher
  */
-public class RunnableDomsEnricher extends AbstractRunnableComponent{
+public class RunnableDomsEnricher extends SBOIBasedAbstractRunnableComponent {
 
     private static Logger logger = LoggerFactory.getLogger(RunnableDomsEnricher.class);
 
