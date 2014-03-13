@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
 
 public class RdfManipulatorTest {
 
@@ -48,5 +49,15 @@ public class RdfManipulatorTest {
         assertTrue(rdf.contains("hasFoobar"), rdf);
         logger.debug(rdf);
     }
+    
+    @Test
+    public void testAddExistingExternalRelation() {
+        final String testUUID = "uuid:c625596a-9bbc-4331-b55c-beb55a3b80fe";
+        RdfManipulator rdfManipulator = new RdfManipulator(rdf1);
+        rdfManipulator.addExternalRelation("hasPart", testUUID);
+        String rdf = rdfManipulator.toString();
+        assertFalse(rdf.replaceFirst(testUUID, "").contains(testUUID), "Relation appears two times, it should not.");
+    }
+    
 
 }
