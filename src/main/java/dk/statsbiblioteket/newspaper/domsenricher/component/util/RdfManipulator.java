@@ -53,31 +53,88 @@ public class RdfManipulator {
      * Incorporates the given fragment of rdf/xml as a rdf:description node of the given document
      * @param fragment The rdf/xml fragment to be added
      */
-    private void addFragmentToDescription(String fragment) {
-        Document fragmentNode = DOM.stringToDOM(fragment, true);
-        Node importedNode = document.importNode(fragmentNode.getDocumentElement(), true);
-        rdfDescriptionNode.appendChild(importedNode);
+    private void addFragmentToDescription(Fragment fragment) {
+        if(!containsFragment(fragment)) {
+            Document fragmentNode = DOM.stringToDOM(fragment.toString(), true);
+            Node importedNode = document.importNode(fragmentNode.getDocumentElement(), true);
+            rdfDescriptionNode.appendChild(importedNode);
+        }
+    }
+    
+    private boolean containsFragment(Fragment fragment) {
+        String xpath = "//our:" + fragment.getPredicateName() 
+                + "[@rdf:resource='info:fedora/" + fragment.getObject() + "']";
+        XPathSelector selector = DOM.createXPathSelector("our", fragment.getPredicate(), 
+                "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+        Node node = selector.selectNode(rdfDescriptionNode, xpath);
+        if(node == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
      * Adds a content model.
      * @param modelPid the full pid of the model, including prefix e.g. "doms:ContentModel_DOMS".
      */
-    public void addContentModel(String modelPid) {
-        String fragment = MODEL_TEMPLATE.replace("PID", modelPid);
-        addFragmentToDescription(fragment);
+    public RdfManipulator addContentModel(String modelPid) {
+        return addRelation("info:fedora/fedora-system:def/model#", "hasModel", modelPid);
     }
 
     /**
      * Adds a new named relation from this object to another object, e.g.
      * <hasPart xmlns="info:fedora/fedora-system:def/relations-external#" rdf:resource="info:fedora/uuid:05d840bf-8bb6-48e5-b214-2ab39f6259f8"/>
-     * The is assumed to have the prefix "http://doms.statsbiblioteket.dk/relations/default/0/1/#"
      * @param predicateName the short name of the relation, e.g. "hasPart"
      * @param objectPid the full doms pid of the object of the relation, e.g. "uuid:05d840bf-8bb6-48e5-b214-2ab39f6259f8"
      */
-    public void addExternalRelation(String predicateName, String objectPid) {
-        String fragment = EXTERNAL_RELATION_TEMPLATE.replace("NAME", predicateName);
-        fragment = fragment.replace("PID", objectPid);
-        addFragmentToDescription(fragment);
+    public RdfManipulator addExternalRelation(String predicateName, String objectPid) {
+        return addRelation("info:fedora/fedora-system:def/relations-external#", predicateName, objectPid);
+    }
+    
+    /**
+     * Adds a new named relation from this object to another object, e.g.
+     * <hasPart xmlns="http://doms.statsbiblioteket.dk/relations/default/0/1/#" rdf:resource="info:fedora/uuid:05d840bf-8bb6-48e5-b214-2ab39f6259f8"/>
+     * @param predicateName the short name of the relation, e.g. "hasPart"
+     * @param objectPid the full doms pid of the object of the relation, e.g. "uuid:05d840bf-8bb6-48e5-b214-2ab39f6259f8"
+     */
+    public RdfManipulator addDomsRelation(String predicateName, String objectPid) {
+        return addRelation("http://doms.statsbiblioteket.dk/relations/default/0/1/#", predicateName, objectPid);
+        
+    }
+    
+    private RdfManipulator addRelation(String predicateNS, String predicateName, String objectPid) {
+        Fragment frag = new Fragment(predicateNS, predicateName, objectPid);
+        addFragmentToDescription(frag);
+        return this;
+    }
+    
+    private class Fragment {
+        private String predicate;
+        private String predicateName;
+        private String object;
+        
+        Fragment(String predicate, String predicateName, String object) {
+            this.predicate = predicate;
+            this.predicateName = predicateName;
+            this.object = object;
+        }
+        
+        public String getPredicate() {
+            return predicate;
+        }
+
+        public String getPredicateName() {
+            return predicateName;
+        }
+
+        public String getObject() {
+            return object;
+        }
+
+        public String toString() {
+            return "<" + predicateName + " xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "
+                    + "xmlns=\"" + predicate + "\" rdf:resource=\"info:fedora/" + object + "\"/>"; 
+        }
     }
 }
