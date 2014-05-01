@@ -4,6 +4,7 @@ import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
+import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricher;
 import dk.statsbiblioteket.util.Pair;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -18,30 +19,6 @@ import static org.mockito.Mockito.when;
 
 public class DomsEnricherTreeEventHandlerTest {
 
-    protected static final String RELS_EXT = "RELS-EXT";
-    protected static final String APPLICATION_RDF_XML = "application/rdf+xml";
-    protected static final String UUID = "uuid:";
-    protected static final String DOMS_CONTENT_MODEL_DOMS = "doms:ContentModel_DOMS";
-    protected static final String DOMS_CONTENT_MODEL_ROUND_TRIP = "doms:ContentModel_RoundTrip";
-    protected static final String DOMS_CONTENT_MODEL_FILM = "doms:ContentModel_Film";
-    protected static final String DOMS_NAMESPACE = "http://doms.statsbiblioteket.dk/relations/default/0/1/#";
-    protected static final String COMMENT = "Modified by GenericNodeEnricher";
-    protected static final String DOMS_CONTENT_MODEL_EDITION = "doms:ContentModel_Edition";
-    protected static final String DOMS_CONTENT_MODEL_PAGE = "doms:ContentModel_Page";
-    protected static final String DOMS_CONTENT_MODEL_EDITION_PAGE = "doms:ContentModel_EditionPage";
-    protected static final String DOMS_CONTENT_MODEL_JPEG2000_FILE = "doms:ContentModel_Jpeg2000File";
-    protected static final String JP2 = ".jp2";
-    protected static final String HAS_FILM = "hasFilm";
-    protected static final String HAS_EDITION = "hasEdition";
-    protected static final String HAS_FILE = "hasFile";
-    protected static final String COMMENT1 = "Modified by EditionPageEnricher";
-    protected static final String HAS_PAGE = "hasPage";
-    protected static final String COMMENT2 = "Modified by BarePageEnricher";
-    protected static final String DOMS_CONTENT_MODEL_WORKSHIFT = "doms:ContentModel_Workshift";
-    protected static final String DOMS_CONTENT_MODEL_UNMATCHED = "doms:ContentModel_Unmatched";
-    protected static final String DOMS_CONTENT_MODEL_ISO_TARGET = "doms:ContentModel_IsoTarget";
-    protected static final String HAS_ISO_TARGET = "hasIsoTarget";
-    protected static final String HAS_WORKSHIFT = "hasWorkshift";
     EnhancedFedora fedora;
     ResultCollector results;
     String name;
@@ -61,7 +38,7 @@ public class DomsEnricherTreeEventHandlerTest {
     @Test
     public void testRoundTripEnrichNoChildren() throws Exception {
 
-        when(fedora.getXMLDatastreamContents(eq(batchPid), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(batchPid), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         batchPid, null, null, null)
                                                                                     );
@@ -70,8 +47,7 @@ public class DomsEnricherTreeEventHandlerTest {
         enricher.handleNodeBegin(new NodeBeginsParsingEvent(name, batchPid));
         enricher.handleNodeEnd(new NodeEndParsingEvent(name, batchPid));
         verify(fedora).modifyDatastreamByValue(
-                batchPid,
-                RELS_EXT,
+                batchPid, NodeEnricher.RELS_EXT,
                 null,
                 null,
 
@@ -79,10 +55,10 @@ public class DomsEnricherTreeEventHandlerTest {
                         batchPid,
                         null,
                         null,
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_ROUND_TRIP)).getBytes(),
-                new ArrayList<String>(),
-                APPLICATION_RDF_XML,
-                COMMENT,
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP)).getBytes(),
+                new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
                                               );
 
@@ -96,11 +72,11 @@ public class DomsEnricherTreeEventHandlerTest {
 
         String filmPid = newPid();
         String filmName = name + "/" + batchID + "-1";
-        when(fedora.getXMLDatastreamContents(eq(batchPid), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(batchPid), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         batchPid, list(filmPid), null, null)
                                                                                     );
-        when(fedora.getXMLDatastreamContents(eq(filmPid), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(filmPid), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         filmPid, null, null, null)
                                                                                    );
@@ -113,8 +89,7 @@ public class DomsEnricherTreeEventHandlerTest {
         enricher.handleNodeEnd(new NodeEndParsingEvent(name, batchPid));
 
         verify(fedora).modifyDatastreamByValue(
-                filmPid,
-                RELS_EXT,
+                filmPid, NodeEnricher.RELS_EXT,
                 null,
                 null,
 
@@ -122,10 +97,10 @@ public class DomsEnricherTreeEventHandlerTest {
                         filmPid,
                         null,
                         null,
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_FILM)).getBytes(),
-                new ArrayList<String>(),
-                APPLICATION_RDF_XML,
-                COMMENT,
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_FILM)).getBytes(),
+                new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
                                               );
 
@@ -133,14 +108,19 @@ public class DomsEnricherTreeEventHandlerTest {
                 batchPid, list(filmPid), list(
                         new Pair<Pair<String, String>, String>(
                                 new Pair<String, String>(
-                                        DOMS_NAMESPACE, HAS_FILM), filmPid
+                                        NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_FILM), filmPid
                         )
-                                             ), Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_ROUND_TRIP)
+                                             ), Arrays.asList(
+                        NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                        NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP)
                                                    );
         verify(fedora).modifyDatastreamByValue(
-                batchPid, RELS_EXT, null, null,
+                batchPid,
+                NodeEnricher.RELS_EXT, null, null,
 
-                relsExtMigrated.getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT, null);
+                relsExtMigrated.getBytes(), new ArrayList<String>(),
+                NodeEnricher.APPLICATION_RDF_XML,
+                NodeEnricher.COMMENT, null);
 
 
     }
@@ -156,20 +136,20 @@ public class DomsEnricherTreeEventHandlerTest {
         String filmName = name + "/" + batchID + "-1";
         String edition1Name = filmName + "/" + "1795-06-02-01";
         String edition2Name = filmName + "/" + "1795-06-03-01";
-        when(fedora.getXMLDatastreamContents(eq(batchPid), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(batchPid), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         batchPid, list(filmPid), null, null)
                                                                                     );
-        when(fedora.getXMLDatastreamContents(eq(filmPid), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(filmPid), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         filmPid, list(edition1, edition2), null, null)
                                                                                    );
-        when(fedora.getXMLDatastreamContents(eq(edition1), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(edition1), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         edition1, null, null, null)
                                                                                     );
 
-        when(fedora.getXMLDatastreamContents(eq(edition2), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(edition2), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         edition2, null, null, null)
                                                                                     );
@@ -186,8 +166,7 @@ public class DomsEnricherTreeEventHandlerTest {
         enricher.handleNodeEnd(new NodeEndParsingEvent(name, batchPid));
 
         verify(fedora).modifyDatastreamByValue(
-                edition1,
-                RELS_EXT,
+                edition1, NodeEnricher.RELS_EXT,
                 null,
                 null,
 
@@ -195,16 +174,15 @@ public class DomsEnricherTreeEventHandlerTest {
                         edition1,
                         null,
                         null,
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_EDITION)).getBytes(),
-                new ArrayList<String>(),
-                APPLICATION_RDF_XML,
-                COMMENT,
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_EDITION)).getBytes(),
+                new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
                                               );
 
         verify(fedora).modifyDatastreamByValue(
-                edition2,
-                RELS_EXT,
+                edition2, NodeEnricher.RELS_EXT,
                 null,
                 null,
 
@@ -212,16 +190,17 @@ public class DomsEnricherTreeEventHandlerTest {
                         edition2,
                         null,
                         null,
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_EDITION)).getBytes(),
-                new ArrayList<String>(),
-                APPLICATION_RDF_XML,
-                COMMENT,
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_EDITION)).getBytes(),
+                new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
                                               );
 
 
         verify(fedora).modifyDatastreamByValue(
-                filmPid, RELS_EXT, null, null,
+                filmPid,
+                NodeEnricher.RELS_EXT, null, null,
 
                 batchRelsExt(
                         filmPid,
@@ -229,18 +208,23 @@ public class DomsEnricherTreeEventHandlerTest {
                         list(
                                 new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_EDITION), edition1
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_EDITION), edition1
                                 ), new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_EDITION), edition2
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_EDITION), edition2
                                 )
                             ),
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_FILM)
-                            ).getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT, null
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_FILM)
+                            ).getBytes(), new ArrayList<String>(),
+                NodeEnricher.APPLICATION_RDF_XML,
+                NodeEnricher.COMMENT, null
                                               );
 
         verify(fedora).modifyDatastreamByValue(
-                batchPid, RELS_EXT, null, null,
+                batchPid,
+                NodeEnricher.RELS_EXT, null, null,
 
                 batchRelsExt(
                         batchPid,
@@ -248,11 +232,15 @@ public class DomsEnricherTreeEventHandlerTest {
                         list(
                                 new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_FILM), filmPid
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_FILM), filmPid
                                 )
                             ),
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_ROUND_TRIP)
-                            ).getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT, null
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP)
+                            ).getBytes(), new ArrayList<String>(),
+                NodeEnricher.APPLICATION_RDF_XML,
+                NodeEnricher.COMMENT, null
                                               );
 
 
@@ -270,29 +258,29 @@ public class DomsEnricherTreeEventHandlerTest {
         String filmName = name + "/" + batchID + "-1";
         String edition1Name = filmName + "/" + "1795-06-02-01";
         String pageName = edition1Name + "/" + "adresseavisen1759-1795-06-02-01-0006";
-        String imageName = pageName + JP2;
+        String imageName = pageName + NodeEnricher.JP2;
 
-        when(fedora.getXMLDatastreamContents(eq(batchPid), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(batchPid), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         batchPid, list(filmPid), null, null)
                                                                                     );
-        when(fedora.getXMLDatastreamContents(eq(filmPid), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(filmPid), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         filmPid, list(edition1), null, null)
                                                                                    );
 
 
-        when(fedora.getXMLDatastreamContents(eq(edition1), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(edition1), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         edition1, list(page1), null, null)
                                                                                     );
 
-        when(fedora.getXMLDatastreamContents(eq(page1), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(page1), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         page1, list(image1), null, null)
                                                                                  );
 
-        when(fedora.getXMLDatastreamContents(eq(image1), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(image1), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         image1, null, null, null)
                                                                                   );
@@ -314,8 +302,7 @@ public class DomsEnricherTreeEventHandlerTest {
 
 
         verify(fedora).modifyDatastreamByValue(
-                image1,
-                RELS_EXT,
+                image1, NodeEnricher.RELS_EXT,
                 null,
                 null,
 
@@ -323,10 +310,10 @@ public class DomsEnricherTreeEventHandlerTest {
                         image1,
                         null,
                         null,
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
-                new ArrayList<String>(),
-                APPLICATION_RDF_XML,
-                COMMENT,
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
+                new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
                                               );
 
@@ -336,33 +323,39 @@ public class DomsEnricherTreeEventHandlerTest {
                 list(
                         new Pair<>(
                                 new Pair<>(
-                                        DOMS_NAMESPACE, HAS_FILE), image1
+                                        NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_FILE), image1
                         )
                     ),
-                Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_PAGE, DOMS_CONTENT_MODEL_EDITION_PAGE)
+                Arrays.asList(
+                        NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                        NodeEnricher.DOMS_CONTENT_MODEL_PAGE,
+                        NodeEnricher.DOMS_CONTENT_MODEL_EDITION_PAGE)
                                            );
         verify(fedora).modifyDatastreamByValue(
-                page1,
-                RELS_EXT,
+                page1, NodeEnricher.RELS_EXT,
                 null,
                 null,
 
                 hasFile.getBytes(),
-                new ArrayList<String>(),
-                APPLICATION_RDF_XML, COMMENT1,
+                new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null);
 
         verify(fedora).modifyDatastreamByValue(
-                edition1, RELS_EXT, null, null,
+                edition1,
+                NodeEnricher.RELS_EXT, null, null,
 
                 batchRelsExt(
                         edition1, list(page1), list(
                                 new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_PAGE), page1
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_PAGE), page1
                                 )
-                                                   ), Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_EDITION)
-                            ).getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT, null
+                                                   ), Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_EDITION)
+                            ).getBytes(), new ArrayList<String>(),
+                NodeEnricher.APPLICATION_RDF_XML,
+                NodeEnricher.COMMENT, null
                                               );
 
 
@@ -379,7 +372,7 @@ public class DomsEnricherTreeEventHandlerTest {
         String workshiftIsoTargetImage = newPid();
         String workshiftIsoName = name + "/" + "WORKSHIFT-ISO-TARGET";
         String workshiftIsoTargetName = workshiftIsoName + "/" + "Target-000001-0001";
-        String workshiftIsoTargetImageName = workshiftIsoTargetName + JP2;
+        String workshiftIsoTargetImageName = workshiftIsoTargetName + NodeEnricher.JP2;
 
         String filmPid = newPid();
         String edition1 = newPid();
@@ -391,7 +384,7 @@ public class DomsEnricherTreeEventHandlerTest {
         String edition1Name = filmName + "/" + editionDate;
 
         String pageName = edition1Name + "/" + avisName + editionDate + "-0006";
-        String imageName = pageName + JP2;
+        String imageName = pageName + NodeEnricher.JP2;
 
 
         String filmIsoTarget = newPid();
@@ -399,7 +392,7 @@ public class DomsEnricherTreeEventHandlerTest {
         String filmIsoTargetPage = newPid();
         String filmIsoTargetPageName = filmIsoTargetName + "/" + avisName + batchID + "-1-ISO-0001";
         String filmIsoTargetPageImage = newPid();
-        String filmIsoTargetPageImageName = filmIsoTargetPageName + JP2;
+        String filmIsoTargetPageImageName = filmIsoTargetPageName + NodeEnricher.JP2;
 
 
         String unmatched = newPid();
@@ -407,74 +400,74 @@ public class DomsEnricherTreeEventHandlerTest {
         String unmatchedPage = newPid();
         String unmatchedPageName = unmatchedName + "/" + avisName + batchID + "-1-0001";
         String unmatchedPageImage = newPid();
-        String unmatchedPageImageName = unmatchedPageName + JP2;
+        String unmatchedPageImageName = unmatchedPageName + NodeEnricher.JP2;
 
-        when(fedora.getXMLDatastreamContents(eq(batchPid), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(batchPid), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         batchPid, list(workshiftIso, filmPid), null, null)
                                                                                     );
-        when(fedora.getXMLDatastreamContents(eq(workshiftIso), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(workshiftIso), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         workshiftIso, list(workshiftIsoTarget), null, null)
                                                                                         );
-        when(fedora.getXMLDatastreamContents(eq(workshiftIsoTarget), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(workshiftIsoTarget), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         workshiftIsoTarget, list(workshiftIsoTargetImage), null, null)
                                                                                               );
-        when(fedora.getXMLDatastreamContents(eq(workshiftIsoTargetImage), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(workshiftIsoTargetImage), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         workshiftIsoTargetImage, null, null, null)
                                                                                                    );
 
 
-        when(fedora.getXMLDatastreamContents(eq(filmPid), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(filmPid), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         filmPid, list(edition1, filmIsoTarget,unmatched), null, null)
                                                                                    );
 
-        when(fedora.getXMLDatastreamContents(eq(unmatched), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(unmatched), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         unmatched, list(unmatchedPage), null, null)
                                                                                          );
 
-        when(fedora.getXMLDatastreamContents(eq(unmatchedPage), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(unmatchedPage), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         unmatchedPage, list(unmatchedPageImage), null, null)
                                                                                              );
 
-        when(fedora.getXMLDatastreamContents(eq(unmatchedPageImage), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(unmatchedPageImage), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         unmatchedPageImage, null, null, null)
                                                                                                   );
 
 
-        when(fedora.getXMLDatastreamContents(eq(filmIsoTarget), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(filmIsoTarget), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         filmIsoTarget, list(filmIsoTargetPage), null, null)
                                                                                          );
 
-        when(fedora.getXMLDatastreamContents(eq(filmIsoTargetPage), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(filmIsoTargetPage), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         filmIsoTargetPage, list(filmIsoTargetPageImage), null, null)
                                                                                              );
 
-        when(fedora.getXMLDatastreamContents(eq(filmIsoTargetPageImage), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(filmIsoTargetPageImage), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         filmIsoTargetPageImage, null, null, null)
                                                                                                   );
 
 
-        when(fedora.getXMLDatastreamContents(eq(edition1), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(edition1), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         edition1, list(page1), null, null)
                                                                                     );
 
-        when(fedora.getXMLDatastreamContents(eq(page1), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(page1), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         page1, list(image1), null, null)
                                                                                  );
 
-        when(fedora.getXMLDatastreamContents(eq(image1), eq(RELS_EXT))).thenReturn(
+        when(fedora.getXMLDatastreamContents(eq(image1), eq(NodeEnricher.RELS_EXT))).thenReturn(
                 batchRelsExt(
                         image1, null, null, null)
                                                                                   );
@@ -522,8 +515,7 @@ public class DomsEnricherTreeEventHandlerTest {
         enricher.handleNodeEnd(new NodeEndParsingEvent(name, batchPid));
 
         verify(fedora).modifyDatastreamByValue(
-                workshiftIsoTargetImage,
-                RELS_EXT,
+                workshiftIsoTargetImage, NodeEnricher.RELS_EXT,
                 null,
                 null,
 
@@ -531,48 +523,57 @@ public class DomsEnricherTreeEventHandlerTest {
                         workshiftIsoTargetImage,
                         null,
                         null,
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
-                new ArrayList<String>(),
-                APPLICATION_RDF_XML,
-                COMMENT,
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
+                new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
                                               );
 
 
 
         verify(fedora).modifyDatastreamByValue(
-                workshiftIsoTarget, RELS_EXT, null, null,
+                workshiftIsoTarget,
+                NodeEnricher.RELS_EXT, null, null,
 
                 batchRelsExt(
                         workshiftIsoTarget,
                         list(workshiftIsoTargetImage), list(
                                 new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_FILE), workshiftIsoTargetImage
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_FILE), workshiftIsoTargetImage
                                 )
                                                       ),
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_PAGE)
-                            ).getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT2, null
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_PAGE)
+                            ).getBytes(), new ArrayList<String>(),
+                NodeEnricher.APPLICATION_RDF_XML,
+                NodeEnricher.COMMENT, null
                                               );
         verify(fedora).modifyDatastreamByValue(
-                workshiftIso, RELS_EXT, null, null,
+                workshiftIso,
+                NodeEnricher.RELS_EXT, null, null,
 
                 batchRelsExt(
                         workshiftIso,
                         list(workshiftIsoTarget), list(
                                 new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_PAGE), workshiftIsoTarget
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_PAGE), workshiftIsoTarget
                                 )
                                                       ),
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_WORKSHIFT)
-                            ).getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT, null
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_WORKSHIFT)
+                            ).getBytes(), new ArrayList<String>(),
+                NodeEnricher.APPLICATION_RDF_XML,
+                NodeEnricher.COMMENT, null
                                               );
 
 
         verify(fedora).modifyDatastreamByValue(
-                unmatchedPageImage,
-                RELS_EXT,
+                unmatchedPageImage, NodeEnricher.RELS_EXT,
                 null,
                 null,
 
@@ -580,52 +581,62 @@ public class DomsEnricherTreeEventHandlerTest {
                         unmatchedPageImage,
                         null,
                         null,
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
-                new ArrayList<String>(),
-                APPLICATION_RDF_XML,
-                COMMENT,
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
+                new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
                                               );
 
 
         verify(fedora).modifyDatastreamByValue(
-                unmatchedPage, RELS_EXT, null, null,
+                unmatchedPage,
+                NodeEnricher.RELS_EXT, null, null,
 
                 batchRelsExt(
                         unmatchedPage,
                         list(unmatchedPageImage), list(
                                 new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_FILE), unmatchedPageImage
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_FILE), unmatchedPageImage
                                 )
                                                       ),
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_PAGE, DOMS_CONTENT_MODEL_EDITION_PAGE)
-                            ).getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT1, null
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_PAGE,
+                                NodeEnricher.DOMS_CONTENT_MODEL_EDITION_PAGE)
+                            ).getBytes(), new ArrayList<String>(),
+                NodeEnricher.APPLICATION_RDF_XML,
+                NodeEnricher.COMMENT, null
                                               );
 
 
 
 
         verify(fedora).modifyDatastreamByValue(
-                unmatched, RELS_EXT, null, null,
+                unmatched,
+                NodeEnricher.RELS_EXT, null, null,
 
                 batchRelsExt(
                         unmatched,
                         list(unmatchedPage), list(
                                 new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_PAGE), unmatchedPage
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_PAGE), unmatchedPage
                                 )
                                                      ),
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_UNMATCHED)
-                            ).getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT, null
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_UNMATCHED)
+                            ).getBytes(), new ArrayList<String>(),
+                NodeEnricher.APPLICATION_RDF_XML,
+                NodeEnricher.COMMENT, null
                                               );
 
 
 
         verify(fedora).modifyDatastreamByValue(
-                filmIsoTargetPageImage,
-                RELS_EXT,
+                filmIsoTargetPageImage, NodeEnricher.RELS_EXT,
                 null,
                 null,
 
@@ -633,49 +644,58 @@ public class DomsEnricherTreeEventHandlerTest {
                         filmIsoTargetPageImage,
                         null,
                         null,
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
-                new ArrayList<String>(),
-                APPLICATION_RDF_XML,
-                COMMENT,
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
+                new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
                                               );
 
         verify(fedora).modifyDatastreamByValue(
-                filmIsoTargetPage, RELS_EXT, null, null,
+                filmIsoTargetPage,
+                NodeEnricher.RELS_EXT, null, null,
 
                 batchRelsExt(
                         filmIsoTargetPage,
                         list(filmIsoTargetPageImage), list(
                                 new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_FILE), filmIsoTargetPageImage
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_FILE), filmIsoTargetPageImage
                                 )
                                                           ),
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_PAGE)
-                            ).getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT2, null
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_PAGE)
+                            ).getBytes(), new ArrayList<String>(),
+                NodeEnricher.APPLICATION_RDF_XML,
+                NodeEnricher.COMMENT, null
                                               );
 
 
         verify(fedora).modifyDatastreamByValue(
-                filmIsoTarget, RELS_EXT, null, null,
+                filmIsoTarget,
+                NodeEnricher.RELS_EXT, null, null,
 
                 batchRelsExt(
                         filmIsoTarget,
                         list(filmIsoTargetPage), list(
                                 new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_PAGE), filmIsoTargetPage
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_PAGE), filmIsoTargetPage
                                 )
                                                           ),
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_ISO_TARGET)
-                            ).getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT, null
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_ISO_TARGET)
+                            ).getBytes(), new ArrayList<String>(),
+                NodeEnricher.APPLICATION_RDF_XML,
+                NodeEnricher.COMMENT, null
                                               );
 
 
 
         verify(fedora).modifyDatastreamByValue(
-                image1,
-                RELS_EXT,
+                image1, NodeEnricher.RELS_EXT,
                 null,
                 null,
 
@@ -683,16 +703,15 @@ public class DomsEnricherTreeEventHandlerTest {
                         image1,
                         null,
                         null,
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
-                new ArrayList<String>(),
-                APPLICATION_RDF_XML,
-                COMMENT,
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
+                new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
                                               );
 
         verify(fedora).modifyDatastreamByValue(
-                page1,
-                RELS_EXT,
+                page1, NodeEnricher.RELS_EXT,
                 null,
                 null,
 
@@ -702,31 +721,38 @@ public class DomsEnricherTreeEventHandlerTest {
                         list(
                                 new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_FILE), image1
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_FILE), image1
                                 )
                             ),
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_PAGE, DOMS_CONTENT_MODEL_EDITION_PAGE)
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_PAGE,
+                                NodeEnricher.DOMS_CONTENT_MODEL_EDITION_PAGE)
                                                    ).getBytes(),
-                new ArrayList<String>(),
-                APPLICATION_RDF_XML, COMMENT1,
+                new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null);
 
         verify(fedora).modifyDatastreamByValue(
-                edition1, RELS_EXT, null, null,
+                edition1,
+                NodeEnricher.RELS_EXT, null, null,
 
                 batchRelsExt(
                         edition1, list(page1), list(
                                 new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_PAGE), page1
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_PAGE), page1
                                 )
-                                                   ), Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_EDITION)
-                            ).getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT, null
+                                                   ), Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_EDITION)
+                            ).getBytes(), new ArrayList<String>(),
+                NodeEnricher.APPLICATION_RDF_XML,
+                NodeEnricher.COMMENT, null
                                               );
 
         verify(fedora).modifyDatastreamByValue(
                 filmPid,
-                RELS_EXT,
+                NodeEnricher.RELS_EXT,
                 null,
                 null,
 
@@ -736,23 +762,28 @@ public class DomsEnricherTreeEventHandlerTest {
                         list(
                                 new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_PAGE), unmatched
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_PAGE), unmatched
                                 ), new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_ISO_TARGET), filmIsoTarget
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_ISO_TARGET), filmIsoTarget
 
                             ), new Pair<>(
                                 new Pair<>(
-                                        DOMS_NAMESPACE, HAS_EDITION), edition1
+                                        NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_EDITION), edition1
                         )
                             ),
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_FILM)
-                            ).getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT, null
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_FILM)
+                            ).getBytes(), new ArrayList<String>(),
+                NodeEnricher.APPLICATION_RDF_XML,
+                NodeEnricher.COMMENT, null
                                               );
 
 
         verify(fedora).modifyDatastreamByValue(
-                batchPid, RELS_EXT, null, null,
+                batchPid,
+                NodeEnricher.RELS_EXT, null, null,
 
                 batchRelsExt(
                         batchPid,
@@ -760,14 +791,18 @@ public class DomsEnricherTreeEventHandlerTest {
                         list(
                                 new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_WORKSHIFT), workshiftIso
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_WORKSHIFT), workshiftIso
                                 ), new Pair<>(
                                         new Pair<>(
-                                                DOMS_NAMESPACE, HAS_FILM), filmPid
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_FILM), filmPid
                                 )
                             ),
-                        Arrays.asList(DOMS_CONTENT_MODEL_DOMS, DOMS_CONTENT_MODEL_ROUND_TRIP)
-                            ).getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT, null
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP)
+                            ).getBytes(), new ArrayList<String>(),
+                NodeEnricher.APPLICATION_RDF_XML,
+                NodeEnricher.COMMENT, null
                                               );
 
 
@@ -779,7 +814,7 @@ public class DomsEnricherTreeEventHandlerTest {
     }
 
     private static String newPid() {
-        return UUID + java.util.UUID.randomUUID().toString();
+        return NodeEnricher.UUID + java.util.UUID.randomUUID().toString();
     }
 
 

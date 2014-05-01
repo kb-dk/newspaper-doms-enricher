@@ -1,18 +1,17 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import dk.statsbibliokeket.newspaper.treenode.TreeNodeStateWithChildren;
 import dk.statsbibliokeket.newspaper.treenode.TreeNodeWithChildren;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
-import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.AbstractNodeEnricher;
+import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricher;
 import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricherFactory;
 import dk.statsbiblioteket.newspaper.domsenricher.component.util.RdfManipulator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * A tree handler which enriches each node with the relevant content models and relations.
@@ -36,7 +35,7 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
      */
     @Override
     public void processNodeEnd(NodeEndParsingEvent event) {
-        AbstractNodeEnricher nodeEnricher = nodeEnricherFactory.getNodeEnricher((TreeNodeWithChildren) getCurrentNode());
+        NodeEnricher nodeEnricher = nodeEnricherFactory.getNodeEnricher((TreeNodeWithChildren) getCurrentNode());
         String relsExtXml = nodeEnricher.getRelsExt(event);
         RdfManipulator rdfManipulator = new RdfManipulator(relsExtXml);
         addParentChildRelations(event, rdfManipulator);
@@ -46,9 +45,9 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
         nodeEnricher.updateRelsExt(event, rdfManipulator.toString());
     }
 
-    private void addContentModels(AbstractNodeEnricher nodeEnricher, RdfManipulator rdfManipulator) {
+    private void addContentModels(NodeEnricher nodeEnricher, RdfManipulator rdfManipulator) {
         for (String contentModel: nodeEnricher.getAllContentModels()) {
-            rdfManipulator.addContentModel("doms:" + contentModel);
+            rdfManipulator.addContentModel(contentModel);
         }
     }
 
@@ -63,46 +62,46 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
                     throw new IllegalStateException("Unexpectedly found a batch node" + childNode.getName() + "as the child of "
                             +  event.getName());
                 case WORKSHIFT_ISO_TARGET:
-                    predicateName = "hasWorkshift";
+                    predicateName = NodeEnricher.HAS_WORKSHIFT;
                     break;
                 case WORKSHIFT_TARGET:
-                    predicateName = "hasPage";
+                    predicateName = NodeEnricher.HAS_PAGE;
                     break;
                 case TARGET_IMAGE:
-                    predicateName = "hasFile";
+                    predicateName = NodeEnricher.HAS_FILE;
                     break;
                 case FILM:
-                    predicateName = "hasFilm";
+                    predicateName = NodeEnricher.HAS_FILM;
                     break;
                 case FILM_ISO_TARGET:
-                    predicateName = "hasIsoTarget";
+                    predicateName = NodeEnricher.HAS_ISO_TARGET;
                     break;
                 case FILM_TARGET:
-                    predicateName = "hasPage";
+                    predicateName = NodeEnricher.HAS_PAGE;
                     break;
                 case ISO_TARGET_IMAGE:
-                    predicateName = "hasFile";
+                    predicateName = NodeEnricher.HAS_FILE;
                     break;
                 case UNMATCHED:
-                    predicateName = "hasPage";
+                    predicateName = NodeEnricher.HAS_PAGE;
                     break;
                 case EDITION:
-                    predicateName = "hasEdition";
+                    predicateName = NodeEnricher.HAS_EDITION;
                     break;
                 case PAGE:
-                    predicateName = "hasPage";
+                    predicateName = NodeEnricher.HAS_PAGE;
                     break;
                 case BRIK:
-                    predicateName = "hasBrik";
+                    predicateName = NodeEnricher.HAS_BRIK;
                     break;
                 case BRIK_IMAGE:
-                    predicateName = "hasFile";
+                    predicateName = NodeEnricher.HAS_FILE;
                     break;
                 case PAGE_IMAGE:
-                    predicateName = "hasFile";
+                    predicateName = NodeEnricher.HAS_FILE;
                     break;
             }
-            rdfManipulator.addExternalRelation(predicateName, pid);
+            rdfManipulator.addDomsRelation(predicateName, pid);
         }
     }
 

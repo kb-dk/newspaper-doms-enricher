@@ -12,21 +12,15 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertTrue;
 
 /**
  *
  */
-public class GenericNodeEnricherTest {
+public class NodeEnricherTest {
 
-    private static Logger logger = LoggerFactory.getLogger(GenericNodeEnricherTest.class);
+    private static Logger logger = LoggerFactory.getLogger(NodeEnricherTest.class);
     EnhancedFedora fedora;
 
     @BeforeMethod(alwaysRun = true)
@@ -41,8 +35,8 @@ public class GenericNodeEnricherTest {
         final String pid = "uuid:foobar";
         ParsingEvent event = new NodeBeginsParsingEvent("B400022028241-RT1", pid);
         TreeNodeWithChildren treeNodeWithChildren = new TreeNodeWithChildren(event.getName(), NodeType.BATCH, null, event.getLocation());
-        AbstractNodeEnricher enricher = factory.getNodeEnricher(treeNodeWithChildren);
+        NodeEnricher enricher = factory.getNodeEnricher(treeNodeWithChildren);
         List<String> contentModels = enricher.getAllContentModels();
-        assertTrue(contentModels.contains("ContentModel_RoundTrip"), contentModels.toString());
+        assertTrue(contentModels.contains(NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP), contentModels.toString());
     }
 }

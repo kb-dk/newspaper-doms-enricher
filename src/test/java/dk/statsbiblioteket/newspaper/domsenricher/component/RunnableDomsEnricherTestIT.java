@@ -1,8 +1,5 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
-import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
-import dk.statsbiblioteket.doms.central.connectors.BackendInvalidResourceException;
-import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedoraImpl;
 import dk.statsbiblioteket.doms.central.connectors.fedora.generated.Datastream;
 import dk.statsbiblioteket.doms.central.connectors.fedora.generated.DatastreamProblems;
@@ -32,7 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  *
@@ -46,7 +44,7 @@ public class RunnableDomsEnricherTestIT {
     private Batch batch;
     private Properties props;;
 
-    @BeforeMethod(alwaysRun = true, groups = "externalTest")
+    @BeforeMethod( groups = "externalTest")
     public void setUp() throws Exception, JAXBException, PIDGeneratorException {
         logger.debug("Doing setUp.");
         props = new Properties();
@@ -66,7 +64,7 @@ public class RunnableDomsEnricherTestIT {
         IngestRoundtripInDoms();
     }
 
-    @AfterMethod(alwaysRun=true, groups = "externalTest")
+    @AfterMethod(groups = "externalTest")
     public void tearDown() throws Exception {
        //cleanRoundtripFromDoms();
     }

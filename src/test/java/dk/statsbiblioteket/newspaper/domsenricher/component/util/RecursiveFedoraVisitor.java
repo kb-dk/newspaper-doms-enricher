@@ -55,7 +55,9 @@ public abstract class RecursiveFedoraVisitor<T> {
             if (!pid.equals(nextPid)) {
                 visitTreeByPid(nextPid, doit);
             }
-            results.put(pid, visitObject(pid, doit));
+            if (!results.containsKey(pid)) {
+                results.put(pid, visitObject(pid, doit));
+            }
         }
         return results;
     }
