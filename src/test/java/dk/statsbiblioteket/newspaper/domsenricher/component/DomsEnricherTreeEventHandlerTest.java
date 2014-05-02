@@ -362,6 +362,29 @@ public class DomsEnricherTreeEventHandlerTest {
     }
 
 
+    /**
+     * Mocks a batch consisting of
+     * RoundTrip
+     *   WorkshiftISoTarget
+     *     page
+     *       image
+     *   Film
+     *     Unmatched
+     *       page
+     *         image
+     *     Film iso target
+     *       page
+     *         image
+     *     Edition
+     *       Page
+     *         image
+     *
+     *  The Fedora servers is mocked to return the correct hasPart Relations to denote this batch. This test lets
+     *  the enricher iterate through this batch and enrich. We ensure that the correct modify datastream (modify rels ext)
+     *  is called for each object in the tree.
+     *
+     * @throws Exception
+     */
     @Test
     public void testAll() throws Exception {
 
