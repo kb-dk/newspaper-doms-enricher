@@ -46,6 +46,9 @@ public class RunnableDomsEnricher extends TreeProcessorAbstractRunnableComponent
 
         handlers.add(new DomsEnricherTreeEventHandler(eFedora, resultCollector));
         handlers.add(new DomsLabelEnricherTreeEventHandler(eFedora));
+        if (getProperties().getProperty(Constants.PUBLISH, "true").equalsIgnoreCase("true") ){
+            handlers.add(new DomsPublisherEventHandler(eFedora,resultCollector));
+        }
 
         EventRunner eventRunner = new EventRunner(createIterator(batch));
         eventRunner.runEvents(handlers, resultCollector);
