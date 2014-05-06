@@ -108,12 +108,7 @@ public class DomsPublisherEventHandler extends DefaultTreeEventHandler {
 
         @Override
         public String call() throws Exception {
-            Validation validation
-                    = enhancedFedora.validate(pid);
-            if (!validation.isValid()){
-                throw new RuntimeException(toString(validation));
-            }
-            //enhancedFedora.modifyObjectState(pid,"A",comment);
+            enhancedFedora.modifyObjectState(pid,"A",comment);
             return pid;
         }
 
