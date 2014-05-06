@@ -68,7 +68,7 @@ public class DomsPublisherEventHandler extends DefaultTreeEventHandler {
         for (int i = 0; i < results.size(); i++) {
             Future<String> result = results.get(i);
             try {
-                logger.debug("Published object {}", result.get());
+                logger.trace("Published object {}", result.get());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
@@ -77,7 +77,7 @@ public class DomsPublisherEventHandler extends DefaultTreeEventHandler {
         }
         long end = System.currentTimeMillis() - start;
 
-        logger.info("Spent {} ms publishing {} objects",end,results.size());
+        logger.debug("Spent {} ms publishing {} objects",end,results.size());
 
     }
 
