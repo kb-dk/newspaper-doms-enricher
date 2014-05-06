@@ -62,10 +62,10 @@ public class RdfManipulator {
     }
     
     private boolean containsFragment(Fragment fragment) {
-        String xpath = "//our:" + fragment.getPredicateName() 
-                + "[@rdf:resource='info:fedora/" + fragment.getObject() + "']";
         XPathSelector selector = DOM.createXPathSelector("our", fragment.getPredicate(), 
                 "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+        String xpath = "//our:" + fragment.getPredicateName() 
+                + "[@rdf:resource='info:fedora/" + fragment.getObject() + "']";
         Node node = selector.selectNode(rdfDescriptionNode, xpath);
         if(node == null) {
             return false;
