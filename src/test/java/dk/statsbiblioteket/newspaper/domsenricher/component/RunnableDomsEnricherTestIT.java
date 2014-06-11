@@ -1,5 +1,8 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
+import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
+import dk.statsbiblioteket.doms.central.connectors.BackendInvalidResourceException;
+import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedoraImpl;
 import dk.statsbiblioteket.doms.central.connectors.fedora.generated.Datastream;
 import dk.statsbiblioteket.doms.central.connectors.fedora.generated.DatastreamProblems;
@@ -29,8 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  *
@@ -44,7 +46,7 @@ public class RunnableDomsEnricherTestIT {
     private Batch batch;
     private Properties props;;
 
-    @BeforeMethod( groups = "externalTest")
+    @BeforeMethod(alwaysRun = true, groups = "externalTest")
     public void setUp() throws Exception, JAXBException, PIDGeneratorException {
         logger.debug("Doing setUp.");
         props = new Properties();
@@ -56,7 +58,6 @@ public class RunnableDomsEnricherTestIT {
             throw new RuntimeException(e);
         }
         Credentials creds = new Credentials(props.getProperty(ConfigConstants.DOMS_USERNAME), props.getProperty(ConfigConstants.DOMS_PASSWORD));
-        //props.setProperty(ConfigConstants.DOMS_URL, "http://localhost:7880/fedora");
         String fedoraLocation = props.getProperty(ConfigConstants.DOMS_URL);
         fedora = new EnhancedFedoraImpl(creds, fedoraLocation , props.getProperty(ConfigConstants.DOMS_PIDGENERATOR_URL) , null);
         generateTestBatch();
@@ -65,7 +66,7 @@ public class RunnableDomsEnricherTestIT {
         IngestRoundtripInDoms();
     }
 
-    @AfterMethod(groups = "externalTest")
+    @AfterMethod(alwaysRun=true, groups = "externalTest")
     public void tearDown() throws Exception {
        //cleanRoundtripFromDoms();
     }
@@ -120,42 +121,41 @@ public class RunnableDomsEnricherTestIT {
      */
     @Test(groups = "externalTest")
     public void testDoWorkOnBatch() throws Exception {
-        try {
-            props.setProperty(ConfigConstants.ITERATOR_USE_FILESYSTEM, "false");
-            RunnableDomsEnricher enricher = new RunnableDomsEnricher(props, fedora);
-            ResultCollector resultCollector = new ResultCollector("foo", "bar");
-  //          props.setProperty(Constants.PUBLISH,"false");
-            enricher.doWorkOnBatch(batch, resultCollector);
-            assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
-            RecursiveFedoraVisitor<Validation> validator = new RecursiveFedoraValidator(fedora);
-            Map<String, Validation> validationMap = null;
-            validationMap = validator.visitTree("path:" + batch.getFullID(), true);
-            int unknownProblems = 0;
-            for (Map.Entry<String, Validation> entry : validationMap.entrySet()) {
-                String pid = entry.getKey();
-                Validation validation = entry.getValue();
-                Problems problems = validation.getProblems();
-                for (String problem : problems.getProblem()) {
+        props.setProperty(ConfigConstants.ITERATOR_USE_FILESYSTEM, "" +
+                "" +
+                "" +
+                "false");
+        RunnableDomsEnricher enricher = new RunnableDomsEnricher(props, fedora);
+        ResultCollector resultCollector = new ResultCollector("foo", "bar");
+        enricher.doWorkOnBatch(batch, resultCollector);
+        assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
+        RecursiveFedoraVisitor<Validation> validator = new RecursiveFedoraValidator(fedora);
+        Map<String, Validation> validationMap = null;
+        validationMap = validator.visitTree("path:" + batch.getFullID(), true);
+        int unknownProblems = 0;
+        for (Map.Entry<String, Validation> entry: validationMap.entrySet()) {
+            String pid = entry.getKey();
+            Validation validation = entry.getValue();
+            Problems problems = validation.getProblems();
+            for (String problem: problems.getProblem()) {
+                if (!isKnown(problem)) {
+                    unknownProblems++;
+                    logger.debug("In {}: {}.", pid, problem);
+                }
+            }
+            DatastreamProblems datastreamProblems = validation.getDatastreamProblems();
+            List<Datastream> datastreams = datastreamProblems.getDatastream();
+            for (Datastream datastream: datastreams) {
+                for (String problem: datastream.getProblem() ) {
                     if (!isKnown(problem)) {
                         unknownProblems++;
-                        logger.debug("In {}: {}.", pid, problem);
-                    }
-                }
-                DatastreamProblems datastreamProblems = validation.getDatastreamProblems();
-                List<Datastream> datastreams = datastreamProblems.getDatastream();
-                for (Datastream datastream : datastreams) {
-                    for (String problem : datastream.getProblem()) {
-                        if (!isKnown(problem)) {
-                            unknownProblems++;
-                            logger.debug("In {}/datastreams/{}: {}", pid, datastream.getDatastreamID(), problem);
-                        }
+                        logger.debug("In {}/datastreams/{}: {}", pid, datastream.getDatastreamID(), problem);
                     }
                 }
             }
-            assertEquals(unknownProblems, 0, "Require that there should be no unknown problems.");
-        } finally {
-            cleanRoundtripFromDoms();
         }
+        assertEquals(unknownProblems, 0, "Require that there should be no unknown problems.");
+        cleanRoundtripFromDoms();
     }
 
     /**
