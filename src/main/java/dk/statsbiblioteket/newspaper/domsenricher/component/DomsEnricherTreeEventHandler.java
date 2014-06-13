@@ -7,7 +7,7 @@ import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricher;
 import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricherFactory;
-import dk.statsbiblioteket.newspaper.domsenricher.component.util.RdfManipulator;
+import dk.statsbiblioteket.newspaper.promptdomsingester.util.RdfManipulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
