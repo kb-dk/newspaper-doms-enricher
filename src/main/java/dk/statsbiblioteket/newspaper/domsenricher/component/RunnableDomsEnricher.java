@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
+import dk.statsbiblioteket.medieplatform.autonomous.ConfigConstants;
 import dk.statsbiblioteket.medieplatform.autonomous.TreeProcessorAbstractRunnableComponent;
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
@@ -47,7 +48,9 @@ public class RunnableDomsEnricher extends TreeProcessorAbstractRunnableComponent
         handlers.add(new DomsEnricherTreeEventHandler(eFedora, resultCollector));
         handlers.add(new DomsLabelEnricherTreeEventHandler(eFedora));
         if (getProperties().getProperty(Constants.PUBLISH, "true").equalsIgnoreCase("true") ){
-            handlers.add(new DomsPublisherEventHandler(eFedora,resultCollector));
+            handlers.add(new DomsPublisherEventHandler(eFedora,
+                    resultCollector,
+                    Integer.parseInt(getProperties().getProperty(ConfigConstants.THREADS_PER_BATCH, "1"))));
         }
 
         EventRunner eventRunner = new EventRunner(createIterator(batch));

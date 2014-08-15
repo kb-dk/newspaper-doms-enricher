@@ -30,15 +30,17 @@ public class DomsPublisherEventHandler extends DefaultTreeEventHandler {
 
 
     private final ResultCollector resultCollector;
+    private final int maxThreads;
     public List<Pair<String,String>> pids = new ArrayList<>();
 
     public boolean shouldPublish = true;
     private static final String comment = NodeEnricher.COMMENT;
     private EnhancedFedora enhancedFedora;
 
-    public DomsPublisherEventHandler(EnhancedFedora enhancedFedora, ResultCollector resultCollector) {
+    public DomsPublisherEventHandler(EnhancedFedora enhancedFedora, ResultCollector resultCollector, int maxThreads) {
         this.enhancedFedora = enhancedFedora;
         this.resultCollector = resultCollector;
+        this.maxThreads = maxThreads;
     }
 
     @Override
@@ -54,7 +56,7 @@ public class DomsPublisherEventHandler extends DefaultTreeEventHandler {
 
         logger.debug("Starting publishing of {} objects", pids.size());
         long start = System.currentTimeMillis();
-        ExecutorService executorService = Executors.newCachedThreadPool();
+        ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
 
         List<Publisher> publishers = asPublishers(pids);
 
@@ -109,6 +111,7 @@ public class DomsPublisherEventHandler extends DefaultTreeEventHandler {
         @Override
         public String call() throws Exception {
             enhancedFedora.modifyObjectState(pid,"A",comment);
+            logger.debug("Published {}",pid);
             return pid;
         }
 
