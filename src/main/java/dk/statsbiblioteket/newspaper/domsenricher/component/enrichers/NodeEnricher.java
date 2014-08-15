@@ -1,5 +1,8 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component.enrichers;
 
+import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
+import dk.statsbiblioteket.doms.central.connectors.BackendInvalidResourceException;
+import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.ParsingEvent;
 import dk.statsbiblioteket.newspaper.domsenricher.component.DomsEnricherComponent;
@@ -90,6 +93,21 @@ public class NodeEnricher {
                     relsExtXml.getBytes(),
                     new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT,
                     null);
+        } catch (BackendInvalidCredsException e){
+            try {
+                fedora.modifyObjectState(event.getLocation(), "I", COMMENT);
+                fedora.modifyDatastreamByValue(event.getLocation(),
+                        RELS_EXT,
+                        null,
+                        null,
+                        relsExtXml.getBytes(),
+                        new ArrayList<String>(),
+                        APPLICATION_RDF_XML,
+                        COMMENT,
+                        null);
+            } catch (BackendInvalidCredsException | BackendMethodFailedException | BackendInvalidResourceException e1) {
+                throw new RuntimeException(e1);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
