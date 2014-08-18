@@ -54,7 +54,7 @@ public class DomsPublisherEventHandler extends DefaultTreeEventHandler {
             return;
         }
 
-        logger.debug("Starting publishing of {} objects", pids.size());
+        logger.debug("Starting publishing of {} objects with {} threads", pids.size(),maxThreads);
         long start = System.currentTimeMillis();
         ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
 
