@@ -4,7 +4,7 @@ import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.mockito.Mockito.*;
@@ -31,7 +31,7 @@ public class DomsLabelEnricherTreeEventHandlerTest {
 
     @Test
     public void testprocessNodeEndPage() throws Exception {
-        TreeEventHandler labelHandler = new DomsLabelEnricherTreeEventHandler(fedora);
+        DefaultTreeEventHandler labelHandler = new DomsLabelEnricherTreeEventHandler(fedora);
 
         labelHandler.handleNodeBegin(new NodeBeginsParsingEvent("batch1"));
         labelHandler.handleNodeBegin(new NodeBeginsParsingEvent("film1"));

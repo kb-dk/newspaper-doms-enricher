@@ -6,9 +6,12 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsPa
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricher;
 import dk.statsbiblioteket.util.Pair;
+import dk.statsbiblioteket.util.xml.DOM;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.xml.transform.TransformerException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -843,7 +846,7 @@ public class DomsEnricherTreeEventHandlerTest {
 
     private static String batchRelsExt(String pid, Iterable<String> childrenBeforeEnrich,
                                        Iterable<Pair<Pair<String, String>, String>> childrenAfterEnrich,
-                                       Iterable<String> contentModels) {
+                                       Iterable<String> contentModels) throws TransformerException {
         String result
                 = "<rdf:RDF xmlns:doms=\"http://doms.statsbiblioteket.dk/relations/default/0/1/#\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n" +
                   "  <rdf:Description rdf:about=\"info:fedora/" + pid + "\">\n";
@@ -871,6 +874,6 @@ public class DomsEnricherTreeEventHandlerTest {
         }
 
         result += "</rdf:Description>\n" + "</rdf:RDF>";
-        return result;
+        return DOM.domToString(DOM.stringToDOM(result, true));
     }
 }

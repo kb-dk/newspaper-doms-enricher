@@ -53,8 +53,8 @@ public class RunnableDomsEnricher extends TreeProcessorAbstractRunnableComponent
                     Integer.parseInt(getProperties().getProperty(ConfigConstants.THREADS_PER_BATCH, "1"))));
         }
 
-        EventRunner eventRunner = new EventRunner(createIterator(batch));
-        eventRunner.runEvents(handlers, resultCollector);
+        EventRunner eventRunner = new EventRunner(createIterator(batch), handlers, resultCollector);
+        eventRunner.run();
     }
 
 }
