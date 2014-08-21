@@ -16,6 +16,7 @@ public class NodeEnricherFactory {
     private Map<NodeType, NodeEnricher> nodeEnricherMap;
 
     private EnhancedFedora fedora;
+    private NodeEnricher unmatchedPage;
     private NodeEnricher editionPage;
     private NodeEnricher missingPage;
 
@@ -55,6 +56,9 @@ public class NodeEnricherFactory {
                 NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
         nodeEnricherMap.put(NodeType.PAGE_IMAGE, new NodeEnricher(fedora,
                 NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
+        unmatchedPage = new NodeEnricher(
+                fedora,
+                NodeEnricher.DOMS_CONTENT_MODEL_PAGE);
         editionPage = new NodeEnricher(
                 fedora,
                 NodeEnricher.DOMS_CONTENT_MODEL_PAGE,
@@ -76,21 +80,20 @@ public class NodeEnricherFactory {
     public NodeEnricher getNodeEnricher(TreeNodeWithChildren treeNode) {
         //GenericNodeEnricher is used for all non-Page nodes. For Page nodes
         //the logic is slightly more complex depending on which type of page
-        //we are on and whether the page actually has a corresponding scan.
+        //we are on (unmatched or edition) and whether the page actually has
+        //a corresponding scan.
         if (!treeNode.getType().equals(NodeType.PAGE)) {
             return getNodeEnricher(treeNode.getType());
         } else {
-            boolean hasJpeg2000 = false;
+            if (treeNode.getParent().getType().equals(NodeType.UNMATCHED)) {
+                return unmatchedPage;
+            }
             for (TreeNode child: treeNode.getChildren()) {
                 if (child.getType().equals(NodeType.PAGE_IMAGE)) {
-                    hasJpeg2000 = true;
+                    return editionPage;
                 }
             }
-            if (hasJpeg2000) {
-                return editionPage;
-            } else {
-                return missingPage;
-            }
+            return missingPage;
         }
     }
 
