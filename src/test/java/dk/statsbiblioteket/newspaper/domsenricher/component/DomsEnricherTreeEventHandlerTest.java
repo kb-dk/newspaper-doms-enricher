@@ -629,8 +629,7 @@ public class DomsEnricherTreeEventHandlerTest {
                                                       ),
                         Arrays.asList(
                                 NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
-                                NodeEnricher.DOMS_CONTENT_MODEL_PAGE,
-                                NodeEnricher.DOMS_CONTENT_MODEL_EDITION_PAGE)
+                                NodeEnricher.DOMS_CONTENT_MODEL_PAGE)
                             ).getBytes(), new ArrayList<String>(),
                 NodeEnricher.APPLICATION_RDF_XML,
                 NodeEnricher.COMMENT, null

@@ -8,6 +8,9 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.Defau
 import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricher;
 import dk.statsbiblioteket.util.Pair;
 import dk.statsbiblioteket.util.Strings;
+
+import dk.statsbibliokeket.newspaper.treenode.NodeType;
+import dk.statsbibliokeket.newspaper.treenode.TreeNodeState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class DomsPublisherEventHandler extends DefaultTreeEventHandler {
+public class DomsPublisherEventHandler extends TreeNodeState {
 
     private static Logger logger = LoggerFactory.getLogger(DomsEnricherTreeEventHandler.class);
 
@@ -44,8 +47,11 @@ public class DomsPublisherEventHandler extends DefaultTreeEventHandler {
     }
 
     @Override
-    public void handleNodeBegin(NodeBeginsParsingEvent event) {
-        pids.add(new Pair<>(event.getLocation(),event.getName()));
+    protected void processNodeBegin(NodeBeginsParsingEvent event) {
+        if (getCurrentNode().getType() != NodeType.BATCH) {
+            pids.add(new Pair<>(event.getLocation(), event.getName()));
+
+        }
     }
 
     @Override
