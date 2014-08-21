@@ -34,6 +34,7 @@ public class NodeEnricher {
     public static final String HAS_EDITION = "hasEdition";
     public static final String HAS_FILE = "hasFile";
     public static final String HAS_PAGE = "hasPage";
+    public static final String HAS_EDITION_PAGE = "hasEditionPage";
     public static final String DOMS_CONTENT_MODEL_WORKSHIFT = "doms:ContentModel_Workshift";
     public static final String DOMS_CONTENT_MODEL_UNMATCHED = "doms:ContentModel_Unmatched";
     public static final String DOMS_CONTENT_MODEL_ISO_TARGET = "doms:ContentModel_IsoTarget";

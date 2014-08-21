@@ -351,6 +351,10 @@ public class DomsEnricherTreeEventHandlerTest {
                         edition1, list(page1), list(
                                 new Pair<>(
                                         new Pair<>(
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_EDITION_PAGE), page1
+                                ),
+                                new Pair<>(
+                                        new Pair<>(
                                                 NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_PAGE), page1
                                 )
                                                    ), Arrays.asList(
@@ -360,7 +364,6 @@ public class DomsEnricherTreeEventHandlerTest {
                 NodeEnricher.APPLICATION_RDF_XML,
                 NodeEnricher.COMMENT, null
                                               );
-
 
     }
 
@@ -763,6 +766,10 @@ public class DomsEnricherTreeEventHandlerTest {
 
                 batchRelsExt(
                         edition1, list(page1), list(
+                                new Pair<>(
+                                        new Pair<>(
+                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_EDITION_PAGE), page1
+                                ),
                                 new Pair<>(
                                         new Pair<>(
                                                 NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_PAGE), page1

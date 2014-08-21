@@ -1,5 +1,6 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
+import dk.statsbibliokeket.newspaper.treenode.NodeType;
 import dk.statsbibliokeket.newspaper.treenode.TreeNodeStateWithChildren;
 import dk.statsbibliokeket.newspaper.treenode.TreeNodeWithChildren;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
@@ -89,6 +90,12 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
                     predicateName = NodeEnricher.HAS_EDITION;
                     break;
                 case PAGE:
+                    if (getCurrentNode().getType().equals(NodeType.EDITION)) {
+                        rdfManipulator.addDomsRelation(NodeEnricher.HAS_EDITION_PAGE, pid);
+                    }
+                    if (childNode.getChildren().isEmpty()) {
+                        continue;
+                    }
                     predicateName = NodeEnricher.HAS_PAGE;
                     break;
                 case BRIK:
