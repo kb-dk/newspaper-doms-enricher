@@ -4,10 +4,18 @@ import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.TreeIterator;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.EventRunner;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.TreeEventHandler;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.Arrays;
+
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertTrue;
 
 /**
  *
@@ -15,7 +23,6 @@ import static org.mockito.Mockito.*;
 public class DomsLabelEnricherTreeEventHandlerTest {
     private ResultCollector resultCollector;
     private EnhancedFedora fedora;
-
 
     @BeforeMethod(alwaysRun = true)
     public void initialize() {
@@ -30,6 +37,75 @@ public class DomsLabelEnricherTreeEventHandlerTest {
     */
 
     @Test
+    public void testFullLabelling() throws Exception {
+        TreeIterator iterator;
+        iterator = mock(TreeIterator.class);
+        when(iterator.hasNext()).thenReturn(true, true, true, true, true, true, true, true, true, true, true, true,
+                                            true, true, true, true, true, true, true, true, true, true, true, true,
+                                            true, true, true, true, true, true, true, true, true, true, true, true,
+                                            false);
+        when(iterator.next()).thenReturn(new NodeBeginsParsingEvent("B4004-RT1"),
+                                         new NodeBeginsParsingEvent("newspaper-4004-1"),
+                                         new NodeBeginsParsingEvent("1970-01-01-01"),
+                                         new NodeBeginsParsingEvent("newspaper-1970-01-01-01-0001A"),
+                                         new NodeBeginsParsingEvent("newspaper-1970-01-01-01-0001A.jp2"),
+                                         new NodeEndParsingEvent("newspaper-1970-01-01-01-0001A.jp2"),
+                                         new NodeEndParsingEvent("newspaper-1970-01-01-01-0001A"),
+                                         new NodeBeginsParsingEvent("newspaper-1970-01-01-01-0001B"),
+                                         new NodeBeginsParsingEvent("newspaper-1970-01-01-01-0001B.jp2"),
+                                         new NodeEndParsingEvent("newspaper-1970-01-01-01-0001B.jp2"),
+                                         new NodeEndParsingEvent("newspaper-1970-01-01-01-0001B"),
+                                         new NodeBeginsParsingEvent("newspaper-1970-01-01-01-0001-brik"),
+                                         new NodeBeginsParsingEvent("newspaper-1970-01-01-01-0001-brik.jp2"),
+                                         new NodeEndParsingEvent("newspaper-1970-01-01-01-0001-brik.jp2"),
+                                         new NodeEndParsingEvent("newspaper-1970-01-01-01-0001-brik"),
+                                         new NodeEndParsingEvent("1970-01-01-01"),
+                                         new NodeBeginsParsingEvent("UNMATCHED"),
+                                         new NodeBeginsParsingEvent("newspaper-4004-1-0002"),
+                                         new NodeBeginsParsingEvent("newspaper-4004-1-0002.jp2"),
+                                         new NodeEndParsingEvent("newspaper-4004-1-0002.jp2"),
+                                         new NodeEndParsingEvent("newspaper-4004-1-0002"),
+                                         new NodeEndParsingEvent("UNMATCHED"),
+                                         new NodeBeginsParsingEvent("FILM-ISO-target"),
+                                         new NodeBeginsParsingEvent("newspaper-4004-1-0003"),
+                                         new NodeBeginsParsingEvent("newspaper-4004-1-0003.jp2"),
+                                         new NodeEndParsingEvent("newspaper-4004-1-0003.jp2"),
+                                         new NodeEndParsingEvent("newspaper-4004-1-0003"),
+                                         new NodeEndParsingEvent("FILM-ISO-target"),
+                                         new NodeEndParsingEvent("avisid-4004-1"),
+                                         new NodeBeginsParsingEvent("WORKSHIFT-ISO-TARGET"),
+                                         new NodeBeginsParsingEvent("Target-000001-0001"),
+                                         new NodeBeginsParsingEvent("Target-000001-0001.jp2"),
+                                         new NodeEndParsingEvent("Target-000001-0001.jp2"),
+                                         new NodeEndParsingEvent("Target-000001-0001"),
+                                         new NodeEndParsingEvent("WORKSHIFT-ISO-TARGET"),
+                                         new NodeEndParsingEvent("B4004-RT1"),
+                                         null);
+        TreeEventHandler labelHandler = new DomsLabelEnricherTreeEventHandler(fedora);
+        new EventRunner(iterator, Arrays.asList(labelHandler), resultCollector).run();
+        verify(fedora).modifyObjectLabel(anyString(), eq("batch-B4004-RT1"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("film-newspaper-4004-1"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("edition-newspaper-1970-01-01-01"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("page-newspaper-1970-01-01-01-0001A"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("page-image-newspaper-1970-01-01-01-0001A"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("page-newspaper-1970-01-01-01-0001B"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("page-image-newspaper-1970-01-01-01-0001B"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("newspaper-1970-01-01-01-0001-brik"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("brik-image-newspaper-1970-01-01-01-0001-brik"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("unmatched"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("page-newspaper-4004-1-0002"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("page-image-newspaper-4004-1-0002"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("film-iso-target"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("film-target-newspaper-4004-1-0003"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("iso-target-image-newspaper-4004-1-0003.jp2"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("workshift-iso-target"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("workshift-target-Target-000001-0001"), anyString());
+        verify(fedora).modifyObjectLabel(anyString(), eq("Target-000001-0001.jp2"), anyString());
+        verifyNoMoreInteractions(fedora);
+        assertTrue(resultCollector.isSuccess());
+    }
+
+    @Test
     public void testprocessNodeEndPage() throws Exception {
         DefaultTreeEventHandler labelHandler = new DomsLabelEnricherTreeEventHandler(fedora);
 
@@ -41,7 +117,7 @@ public class DomsLabelEnricherTreeEventHandlerTest {
 
         labelHandler.handleNodeBegin(page);
 
-        labelHandler.handleNodeEnd(createNodeEndParsingEvent("blabla/mypage"));
+        labelHandler.handleNodeEnd(new NodeEndParsingEvent("blabla/mypage"));
         String currentNodePid = page.getLocation();
 
         verify(fedora).modifyObjectLabel(currentNodePid, "page-" + "mypage", "");
@@ -49,7 +125,4 @@ public class DomsLabelEnricherTreeEventHandlerTest {
     }
 
 
-    private NodeEndParsingEvent createNodeEndParsingEvent(String name) {
-        return new NodeEndParsingEvent(name);
-    }
 }
