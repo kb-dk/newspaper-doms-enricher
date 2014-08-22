@@ -1,18 +1,12 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedoraImpl;
-import dk.statsbiblioteket.doms.central.connectors.fedora.generated.Datastream;
-import dk.statsbiblioteket.doms.central.connectors.fedora.generated.DatastreamProblems;
-import dk.statsbiblioteket.doms.central.connectors.fedora.generated.Problems;
-import dk.statsbiblioteket.doms.central.connectors.fedora.generated.Validation;
 import dk.statsbiblioteket.doms.central.connectors.fedora.pidGenerator.PIDGeneratorException;
 import dk.statsbiblioteket.doms.webservices.authentication.Credentials;
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.ConfigConstants;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.newspaper.domsenricher.component.util.RecursiveFedoraCleaner;
-import dk.statsbiblioteket.newspaper.domsenricher.component.util.RecursiveFedoraValidator;
-import dk.statsbiblioteket.newspaper.domsenricher.component.util.RecursiveFedoraVisitor;
 import dk.statsbiblioteket.newspaper.promptdomsingester.component.RunnablePromptDomsIngester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +19,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -55,6 +47,7 @@ public class RunnableDomsEnricherTestIT {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        props.setProperty(ConfigConstants.THREADS_PER_BATCH, Runtime.getRuntime().availableProcessors() + "");
         Credentials creds = new Credentials(props.getProperty(ConfigConstants.DOMS_USERNAME), props.getProperty(ConfigConstants.DOMS_PASSWORD));
         String fedoraLocation = props.getProperty(ConfigConstants.DOMS_URL);
         fedora = new EnhancedFedoraImpl(creds, fedoraLocation , props.getProperty(ConfigConstants.DOMS_PIDGENERATOR_URL) , null);
@@ -124,35 +117,19 @@ public class RunnableDomsEnricherTestIT {
                 "" +
                 "false");
         RunnableDomsEnricher enricher = new RunnableDomsEnricher(props, fedora);
-        ResultCollector resultCollector = new ResultCollector("foo", "bar");
+        ResultCollector resultCollector = new ResultCollector("foo", "bar"){
+            @Override
+            public void addFailure(String reference, String type, String component, String description,
+                                   String... details) {
+                if (!description.contains("Datastream 'CONTENTS' is required by the content model 'doms:ContentModel_Jpeg2000File'")) {
+                    super.addFailure(reference, type, component, description, details);
+                }
+            }
+        };
+
         enricher.doWorkOnBatch(batch, resultCollector);
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
-        RecursiveFedoraVisitor<Validation> validator = new RecursiveFedoraValidator(fedora);
-        Map<String, Validation> validationMap = null;
-        validationMap = validator.visitTree("path:" + batch.getFullID(), true);
-        int unknownProblems = 0;
-        for (Map.Entry<String, Validation> entry: validationMap.entrySet()) {
-            String pid = entry.getKey();
-            Validation validation = entry.getValue();
-            Problems problems = validation.getProblems();
-            for (String problem: problems.getProblem()) {
-                if (!isKnown(problem)) {
-                    unknownProblems++;
-                    logger.debug("In {}: {}.", pid, problem);
-                }
-            }
-            DatastreamProblems datastreamProblems = validation.getDatastreamProblems();
-            List<Datastream> datastreams = datastreamProblems.getDatastream();
-            for (Datastream datastream: datastreams) {
-                for (String problem: datastream.getProblem() ) {
-                    if (!isKnown(problem)) {
-                        unknownProblems++;
-                        logger.debug("In {}/datastreams/{}: {}", pid, datastream.getDatastreamID(), problem);
-                    }
-                }
-            }
-        }
-        assertEquals(unknownProblems, 0, "Require that there should be no unknown problems.");
+
         cleanRoundtripFromDoms();
     }
 
@@ -163,7 +140,7 @@ public class RunnableDomsEnricherTestIT {
      */
     private boolean isKnown(String problem) {
         return   (problem.contains("EVENTS") && problem.contains("RoundTrip")) ||
-                       (problem.contains("FILM") && problem.contains("schema"));
+                       (problem.contains("FILM") && problem.contains("schema")) || (problem.contains("Datastream 'CONTENTS' is required by the content model 'doms:ContentModel_Jpeg2000File'"));
     }
 
 }

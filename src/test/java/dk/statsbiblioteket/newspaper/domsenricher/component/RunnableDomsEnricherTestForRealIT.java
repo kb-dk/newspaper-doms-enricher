@@ -51,6 +51,7 @@ public class RunnableDomsEnricherTestForRealIT {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        props.setProperty(ConfigConstants.THREADS_PER_BATCH, Runtime.getRuntime().availableProcessors() + "");
         Credentials creds = new Credentials(props.getProperty(ConfigConstants.DOMS_USERNAME), props.getProperty(ConfigConstants.DOMS_PASSWORD));
         String fedoraLocation = props.getProperty(ConfigConstants.DOMS_URL);
         fedora = new EnhancedFedoraImpl(creds, fedoraLocation , props.getProperty(ConfigConstants.DOMS_PIDGENERATOR_URL) , null);
