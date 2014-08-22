@@ -352,10 +352,6 @@ public class DomsEnricherTreeEventHandlerTest {
                                 new Pair<>(
                                         new Pair<>(
                                                 NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_EDITION_PAGE), page1
-                                ),
-                                new Pair<>(
-                                        new Pair<>(
-                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_PAGE), page1
                                 )
                                                    ), Arrays.asList(
                                 NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
@@ -769,10 +765,6 @@ public class DomsEnricherTreeEventHandlerTest {
                                 new Pair<>(
                                         new Pair<>(
                                                 NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_EDITION_PAGE), page1
-                                ),
-                                new Pair<>(
-                                        new Pair<>(
-                                                NodeEnricher.DOMS_NAMESPACE, NodeEnricher.HAS_PAGE), page1
                                 )
                                                    ), Arrays.asList(
                                 NodeEnricher.DOMS_CONTENT_MODEL_DOMS,

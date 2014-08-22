@@ -91,12 +91,10 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
                     break;
                 case PAGE:
                     if (getCurrentNode().getType().equals(NodeType.EDITION)) {
-                        rdfManipulator.addDomsRelation(NodeEnricher.HAS_EDITION_PAGE, pid);
+                        predicateName = NodeEnricher.HAS_EDITION_PAGE;
+                    } else {
+                        predicateName = NodeEnricher.HAS_PAGE;
                     }
-                    if (childNode.getChildren().isEmpty()) {
-                        continue;
-                    }
-                    predicateName = NodeEnricher.HAS_PAGE;
                     break;
                 case BRIK:
                     predicateName = NodeEnricher.HAS_BRIK;
