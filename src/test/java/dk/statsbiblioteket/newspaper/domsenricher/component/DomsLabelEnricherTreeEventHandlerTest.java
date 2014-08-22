@@ -120,7 +120,10 @@ public class DomsLabelEnricherTreeEventHandlerTest {
         labelHandler.handleNodeEnd(new NodeEndParsingEvent("blabla/mypage"));
         String currentNodePid = page.getLocation();
 
-        verify(fedora).modifyObjectLabel(currentNodePid, "page-" + "mypage", "");
+        verify(fedora).modifyObjectLabel(currentNodePid, "batch-" + "batch1", "");
+        verify(fedora).modifyObjectLabel(currentNodePid, "film-" + "film1", "");
+        verify(fedora).modifyObjectLabel(currentNodePid, "edition--" + "edition1", "");
+        verify(fedora).modifyObjectLabel(currentNodePid, "page-" + "page1", "");
         verifyNoMoreInteractions(fedora);
     }
 
