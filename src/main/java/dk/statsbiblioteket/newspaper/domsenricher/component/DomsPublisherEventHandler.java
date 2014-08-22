@@ -81,6 +81,7 @@ public class DomsPublisherEventHandler extends TreeNodeState {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
                 addFailure(pids.get(i),e.getCause());
+                logger.warn("Could not publish doms object for {}", pids.get(i).getRight(), e.getCause());
             }
         }
         long end = System.currentTimeMillis() - start;
@@ -90,8 +91,9 @@ public class DomsPublisherEventHandler extends TreeNodeState {
     }
 
     private void addFailure(Pair<String, String> stringStringPair, Throwable e) {
-        resultCollector.addFailure(stringStringPair.getRight(),"Exception",
-                getClass().getSimpleName(),e.getMessage(), Strings.getStackTrace(e));
+        resultCollector.addFailure(stringStringPair.getRight(),"metadata",
+                getClass().getSimpleName(),
+                "Could not publish doms object: " + e.toString());
     }
 
     private List<Publisher> asPublishers(Collection<Pair<String,String>> pids) {
