@@ -2,6 +2,7 @@ package dk.statsbiblioteket.newspaper.domsenricher.component;
 
 import dk.statsbibliokeket.newspaper.treenode.TreeNodeStateWithChildren;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
+import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 
 import java.util.regex.Matcher;
@@ -30,7 +31,7 @@ public class DomsLabelEnricherTreeEventHandler extends TreeNodeStateWithChildren
      * @param event the event identifying this node.
      */
     @Override
-    public void processNodeEnd(NodeEndParsingEvent event) {
+    public void processNodeBegin(NodeBeginsParsingEvent event) {
         String currentNodePid = getCurrentNode().getLocation();
         int lastSlashPosition = event.getName().lastIndexOf("/");
         String nameOfNode = event.getName().substring(lastSlashPosition + 1);
@@ -51,6 +52,14 @@ public class DomsLabelEnricherTreeEventHandler extends TreeNodeStateWithChildren
                     break;
                 case FILM:
                     fedora.modifyObjectLabel(currentNodePid, "film-" + nameOfNode, "");
+                    // Put aside AvisID for use later
+                    Pattern p = Pattern.compile("(.*)-[0-9]*-[0-9]*$");
+                    Matcher m = p.matcher(nameOfNode);
+                    if (m.find()) {
+                        previousAvisID = m.group(1);
+                    } else {
+                        previousAvisID = "";
+                    }
                     break;
                 case FILM_ISO_TARGET:
                     fedora.modifyObjectLabel(currentNodePid, "film-iso-target", "");
@@ -65,19 +74,11 @@ public class DomsLabelEnricherTreeEventHandler extends TreeNodeStateWithChildren
                     fedora.modifyObjectLabel(currentNodePid, "unmatched", "");
                     break;
                 case EDITION:
-                    fedora.modifyObjectLabel(currentNodePid, "edition-" + previousAvisID, "");
+                    fedora.modifyObjectLabel(currentNodePid, "edition-" + previousAvisID + "-" + nameOfNode, "");
                     break;
                 case PAGE:
                     fedora.modifyObjectLabel(currentNodePid, "page-" + nameOfNode, "");
                     previousPageName = nameOfNode;
-                    // Put aside AvisID for use later
-                    Pattern p = Pattern.compile("(.*)-[0-9]{4}(-[0-9]{2})?(-[0-9]{2})?-[0-9]{2}-[0-9]{4}[A-Za-z]?");
-                    Matcher m = p.matcher(nameOfNode);
-                    if (m.find()) {
-                        previousAvisID = m.group(1);
-                    } else {
-                        previousAvisID = "";
-                    }
                     break;
                 case BRIK:
                     fedora.modifyObjectLabel(currentNodePid, nameOfNode, "");
