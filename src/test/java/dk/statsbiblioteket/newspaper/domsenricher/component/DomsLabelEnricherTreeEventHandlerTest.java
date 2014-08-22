@@ -106,24 +106,14 @@ public class DomsLabelEnricherTreeEventHandlerTest {
     }
 
     @Test
-    public void testprocessNodeEndPage() throws Exception {
+    public void testprocessNodeBeginPage() throws Exception {
         DefaultTreeEventHandler labelHandler = new DomsLabelEnricherTreeEventHandler(fedora);
 
-        labelHandler.handleNodeBegin(new NodeBeginsParsingEvent("batch1"));
-        labelHandler.handleNodeBegin(new NodeBeginsParsingEvent("film1"));
-        labelHandler.handleNodeBegin(new NodeBeginsParsingEvent("edition1"));
-
-        NodeBeginsParsingEvent page = new NodeBeginsParsingEvent("page1");
-
+        NodeBeginsParsingEvent page = new NodeBeginsParsingEvent("blabla/mypage");
         labelHandler.handleNodeBegin(page);
-
-        labelHandler.handleNodeEnd(new NodeEndParsingEvent("blabla/mypage"));
         String currentNodePid = page.getLocation();
 
-        verify(fedora).modifyObjectLabel(currentNodePid, "batch-" + "batch1", "");
-        verify(fedora).modifyObjectLabel(currentNodePid, "film-" + "film1", "");
-        verify(fedora).modifyObjectLabel(currentNodePid, "edition--" + "edition1", "");
-        verify(fedora).modifyObjectLabel(currentNodePid, "page-" + "page1", "");
+        verify(fedora).modifyObjectLabel(currentNodePid, "batch-" + "mypage", "");
         verifyNoMoreInteractions(fedora);
     }
 
