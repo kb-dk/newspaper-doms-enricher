@@ -315,6 +315,7 @@ public class DomsEnricherTreeEventHandlerTest {
                         null,
                         Arrays.asList(
                                 NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_FILE,
                                 NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
                 new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
@@ -550,6 +551,7 @@ public class DomsEnricherTreeEventHandlerTest {
                         null,
                         Arrays.asList(
                                 NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_FILE,
                                 NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
                 new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
@@ -608,6 +610,7 @@ public class DomsEnricherTreeEventHandlerTest {
                         null,
                         Arrays.asList(
                                 NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_FILE,
                                 NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
                 new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
@@ -670,6 +673,7 @@ public class DomsEnricherTreeEventHandlerTest {
                         null,
                         Arrays.asList(
                                 NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_FILE,
                                 NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
                 new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
@@ -729,6 +733,7 @@ public class DomsEnricherTreeEventHandlerTest {
                         null,
                         Arrays.asList(
                                 NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_FILE,
                                 NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE)).getBytes(),
                 new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null

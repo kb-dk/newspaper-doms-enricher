@@ -42,6 +42,7 @@ public class NodeEnricher {
     public static final String HAS_WORKSHIFT = "hasWorkshift";
     public static final String DOMS_CONTENT_MODEL_BRIK = "doms:ContentModel_Brik";
     public static final String HAS_BRIK = "hasBrik";
+    public static final String DOMS_CONTENT_MODEL_FILE = "doms:ContentModel_File";
     static Logger logger = LoggerFactory.getLogger(NodeEnricher.class);
     private final String contentModelDoms = "doms:ContentModel_DOMS";
     ArrayList<String> contentModels;

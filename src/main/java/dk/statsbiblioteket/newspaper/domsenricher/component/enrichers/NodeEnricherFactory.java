@@ -38,14 +38,14 @@ public class NodeEnricherFactory {
         nodeEnricherMap.put(NodeType.WORKSHIFT_TARGET, new NodeEnricher(fedora,
                 NodeEnricher.DOMS_CONTENT_MODEL_PAGE));
         nodeEnricherMap.put(NodeType.TARGET_IMAGE, new NodeEnricher(fedora,
-                NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
+                NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
         nodeEnricherMap.put(NodeType.FILM, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_FILM));
         nodeEnricherMap.put(NodeType.FILM_ISO_TARGET, new NodeEnricher(fedora,
                 NodeEnricher.DOMS_CONTENT_MODEL_ISO_TARGET));
         nodeEnricherMap.put(NodeType.FILM_TARGET, new NodeEnricher(fedora,
                 NodeEnricher.DOMS_CONTENT_MODEL_PAGE));
         nodeEnricherMap.put(NodeType.ISO_TARGET_IMAGE, new NodeEnricher(fedora,
-                NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
+                                                                        NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
         nodeEnricherMap.put(NodeType.UNMATCHED, new NodeEnricher(fedora,
                 NodeEnricher.DOMS_CONTENT_MODEL_UNMATCHED));
         nodeEnricherMap.put(NodeType.EDITION, new NodeEnricher(fedora,
@@ -53,9 +53,9 @@ public class NodeEnricherFactory {
         nodeEnricherMap.put(NodeType.PAGE, null);
         nodeEnricherMap.put(NodeType.BRIK, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_BRIK));
         nodeEnricherMap.put(NodeType.BRIK_IMAGE, new NodeEnricher(fedora,
-                NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
+                                                                  NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
         nodeEnricherMap.put(NodeType.PAGE_IMAGE, new NodeEnricher(fedora,
-                NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
+                                                                  NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
         unmatchedPage = new NodeEnricher(
                 fedora,
                 NodeEnricher.DOMS_CONTENT_MODEL_PAGE);
