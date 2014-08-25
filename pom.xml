@@ -30,16 +30,10 @@
         <connection>scm:git:https://github.com/statsbiblioteket/newspaper-doms-enricher.git</connection>
         <developerConnection>scm:git:git@github.com:statsbiblioteket/newspaper-doms-enricher.git
         </developerConnection>
-        <tag>newspaper-doms-enricher-1.1</tag>
     </scm>
 
     <dependencies>
 
-        <dependency>
-            <groupId>dk.statsbiblioteket.doms.central</groupId>
-            <artifactId>centralWebservice-lib</artifactId>
-            <version>1.5-SNAPSHOT</version>
-        </dependency>
 
         <dependency>
             <groupId>dk.statsbiblioteket.sbutil</groupId>
