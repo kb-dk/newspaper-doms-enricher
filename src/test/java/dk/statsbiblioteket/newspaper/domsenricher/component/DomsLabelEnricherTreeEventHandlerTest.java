@@ -114,7 +114,7 @@ public class DomsLabelEnricherTreeEventHandlerTest {
         labelHandler.handleNodeBegin(page);
         String currentNodePid = page.getLocation();
 
-        verify(fedora).modifyObjectLabel(currentNodePid, "batch-" + "mypage", "");
+        verify(fedora).modifyObjectLabel(currentNodePid, "batch-" + "mypage", NodeEnricher.COMMENT);
         verifyNoMoreInteractions(fedora);
     }
 
