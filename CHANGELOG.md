@@ -1,3 +1,6 @@
+1.3
+* Retry talking to Fedora a number of times
+
 1.2
 * Update pollAndWork.sh to invoke the proper class
 * Update to newspaper parent 1.2

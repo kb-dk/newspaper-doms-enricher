@@ -1,13 +1,12 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
+import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.doms.central.connectors.fedora.generated.Validation;
 import dk.statsbiblioteket.medieplatform.autonomous.ResultCollector;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
-import dk.statsbiblioteket.medieplatform.autonomous.iterator.eventhandlers.DefaultTreeEventHandler;
 import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricher;
 import dk.statsbiblioteket.util.Pair;
-import dk.statsbiblioteket.util.Strings;
 
 import dk.statsbibliokeket.newspaper.treenode.NodeType;
 import dk.statsbibliokeket.newspaper.treenode.TreeNodeState;
@@ -34,16 +33,19 @@ public class DomsPublisherEventHandler extends TreeNodeState {
 
     private final ResultCollector resultCollector;
     private final int maxThreads;
+    private final int tries;
     public List<Pair<String,String>> pids = new ArrayList<>();
 
     public boolean shouldPublish = true;
     private static final String comment = NodeEnricher.COMMENT;
     private EnhancedFedora enhancedFedora;
 
-    public DomsPublisherEventHandler(EnhancedFedora enhancedFedora, ResultCollector resultCollector, int maxThreads) {
+    public DomsPublisherEventHandler(EnhancedFedora enhancedFedora, ResultCollector resultCollector, int maxThreads,
+                                     int tries) {
         this.enhancedFedora = enhancedFedora;
         this.resultCollector = resultCollector;
         this.maxThreads = maxThreads;
+        this.tries = tries;
     }
 
     @Override
@@ -118,9 +120,21 @@ public class DomsPublisherEventHandler extends TreeNodeState {
 
         @Override
         public String call() throws Exception {
-            enhancedFedora.modifyObjectState(pid,"A",comment);
-            logger.debug("Published {}",pid);
-            return pid;
+            int tryCount = 1;
+            while (true) {
+                try {
+                    enhancedFedora.modifyObjectState(pid, "A", comment);
+                    logger.debug("Published {}",pid);
+                    return pid;
+                } catch (BackendMethodFailedException e) {
+                    if (tryCount < tries) {
+                        logger.warn("Failed publishing pid '{}', retrying", pid, e);
+                        tryCount++;
+                    } else {
+                        throw e;
+                    }
+                }
+            }
         }
 
         private String toString(Validation result) throws JAXBException {

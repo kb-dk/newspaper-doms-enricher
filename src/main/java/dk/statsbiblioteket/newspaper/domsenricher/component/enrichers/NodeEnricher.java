@@ -47,15 +47,18 @@ public class NodeEnricher {
     private final String contentModelDoms = "doms:ContentModel_DOMS";
     ArrayList<String> contentModels;
     private EnhancedFedora fedora;
+    private final int maxTries;
 
     /**
      * Creates a a node enricher which adds (up to) one additional model as well as ContentModel_Doms
      * to an object.
      * @param fedora
+     * @param maxTries
      * @param contentModelNames May be null, in which case only ContenModel_Doms is added.
      */
-    protected NodeEnricher(EnhancedFedora fedora, String... contentModelNames) {
+    protected NodeEnricher(EnhancedFedora fedora, int maxTries, String... contentModelNames) {
         this.fedora = fedora;
+        this.maxTries = maxTries;
         contentModels = new ArrayList<>();
 
         if (contentModelNames != null) {
@@ -75,10 +78,20 @@ public class NodeEnricher {
      * @return the datastream.
      */
     public String getRelsExt(ParsingEvent event) {
-        try {
-            return fedora.getXMLDatastreamContents(event.getLocation(), RELS_EXT);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        int tryCount = 1;
+        while (true) {
+            try {
+                return fedora.getXMLDatastreamContents(event.getLocation(), RELS_EXT);
+            } catch (BackendMethodFailedException e) {
+                if (tryCount < maxTries) {
+                    logger.warn("Unable to get RELS_EXT datastream from {}. Retrying.", event.getLocation(), e);
+                    tryCount++;
+                } else {
+                    throw new RuntimeException(e);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -88,30 +101,31 @@ public class NodeEnricher {
      * @param relsExtXml the new datastream contents.
      */
     public void updateRelsExt(ParsingEvent event, String relsExtXml) {
-        try {
-            fedora.modifyDatastreamByValue(event.getLocation(), RELS_EXT,
-                    null,
-                    null,
-                    relsExtXml.getBytes(),
-                    new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT,
-                    null);
-        } catch (BackendInvalidCredsException e){
+        int tries = 1;
+        while(true) {
             try {
-                fedora.modifyObjectState(event.getLocation(), "I", COMMENT);
-                fedora.modifyDatastreamByValue(event.getLocation(),
-                        RELS_EXT,
-                        null,
-                        null,
-                        relsExtXml.getBytes(),
-                        new ArrayList<String>(),
-                        APPLICATION_RDF_XML,
-                        COMMENT,
-                        null);
-            } catch (BackendInvalidCredsException | BackendMethodFailedException | BackendInvalidResourceException e1) {
-                throw new RuntimeException(e1);
+                fedora.modifyDatastreamByValue(event.getLocation(), RELS_EXT, null, null, relsExtXml.getBytes(), new ArrayList<String>(), APPLICATION_RDF_XML, COMMENT,
+                                               null);
+                return;
+            } catch (BackendInvalidCredsException e) {
+                try {
+                    fedora.modifyObjectState(event.getLocation(), "I", COMMENT);
+                    fedora.modifyDatastreamByValue(event.getLocation(), RELS_EXT, null, null, relsExtXml.getBytes(), new ArrayList<String>(),
+                                                   APPLICATION_RDF_XML, COMMENT, null);
+                    return;
+                } catch (BackendInvalidCredsException | BackendMethodFailedException | BackendInvalidResourceException e1) {
+                    throw new RuntimeException(e1);
+                }
+            } catch (BackendMethodFailedException e) {
+                if (tries < maxTries) {
+                    logger.warn("Unable to modify RELS-EXT datastream. Retrying.");
+                    tries++;
+                } else {
+                    throw new RuntimeException(e);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 

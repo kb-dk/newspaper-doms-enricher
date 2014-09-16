@@ -1,6 +1,12 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
 import dk.statsbibliokeket.newspaper.treenode.TreeNodeStateWithChildren;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import dk.statsbiblioteket.doms.central.connectors.BackendInvalidCredsException;
+import dk.statsbiblioteket.doms.central.connectors.BackendInvalidResourceException;
+import dk.statsbiblioteket.doms.central.connectors.BackendMethodFailedException;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricher;
@@ -19,9 +25,12 @@ public class DomsLabelEnricherTreeEventHandler extends TreeNodeStateWithChildren
     private String previousBrikName;
     private String previousPageName;
     private static final Pattern AVIS_PATTERN = Pattern.compile("(.*)-[0-9]*-[0-9]*$");
+    private Logger log = LoggerFactory.getLogger(getClass());
+    private final int maxTries;
 
-    public DomsLabelEnricherTreeEventHandler(EnhancedFedora fedora) {
+    public DomsLabelEnricherTreeEventHandler(EnhancedFedora fedora, int maxTries) {
         this.fedora = fedora;
+        this.maxTries = maxTries;
         avisID = "";
     }
 
@@ -40,19 +49,19 @@ public class DomsLabelEnricherTreeEventHandler extends TreeNodeStateWithChildren
         try {
             switch (getCurrentNode().getType()) {
                 case BATCH:
-                    fedora.modifyObjectLabel(currentNodePid, "batch-" + nameOfNode, COMMENT);
+                    modifyObjectLabel(currentNodePid, "batch-" + nameOfNode);
                     break;
                 case WORKSHIFT_ISO_TARGET:
-                    fedora.modifyObjectLabel(currentNodePid, "workshift-iso-target", COMMENT);
+                    modifyObjectLabel(currentNodePid, "workshift-iso-target");
                     break;
                 case WORKSHIFT_TARGET:
-                    fedora.modifyObjectLabel(currentNodePid, "workshift-target-" + nameOfNode, COMMENT);
+                    modifyObjectLabel(currentNodePid, "workshift-target-" + nameOfNode);
                     break;
                 case TARGET_IMAGE:
-                    fedora.modifyObjectLabel(currentNodePid, nameOfNode, COMMENT);
+                    modifyObjectLabel(currentNodePid, nameOfNode);
                     break;
                 case FILM:
-                    fedora.modifyObjectLabel(currentNodePid, "film-" + nameOfNode, COMMENT);
+                    modifyObjectLabel(currentNodePid, "film-" + nameOfNode);
                     // Put aside AvisID for use later
                     Matcher m = AVIS_PATTERN.matcher(nameOfNode);
                     if (m.find()) {
@@ -62,38 +71,56 @@ public class DomsLabelEnricherTreeEventHandler extends TreeNodeStateWithChildren
                     }
                     break;
                 case FILM_ISO_TARGET:
-                    fedora.modifyObjectLabel(currentNodePid, "film-iso-target", COMMENT);
+                    modifyObjectLabel(currentNodePid, "film-iso-target");
                     break;
                 case FILM_TARGET:
-                    fedora.modifyObjectLabel(currentNodePid, "film-target-" + nameOfNode, COMMENT);
+                    modifyObjectLabel(currentNodePid, "film-target-" + nameOfNode);
                     break;
                 case ISO_TARGET_IMAGE:
-                    fedora.modifyObjectLabel(currentNodePid, "iso-target-image-" + nameOfNode, COMMENT);
+                    modifyObjectLabel(currentNodePid, "iso-target-image-" + nameOfNode);
                     break;
                 case UNMATCHED:
-                    fedora.modifyObjectLabel(currentNodePid, "unmatched", COMMENT);
+                    modifyObjectLabel(currentNodePid, "unmatched");
                     break;
                 case EDITION:
-                    fedora.modifyObjectLabel(currentNodePid, "edition-" + avisID + "-" + nameOfNode, COMMENT);
+                    modifyObjectLabel(currentNodePid, "edition-" + avisID + "-" + nameOfNode);
                     break;
                 case PAGE:
-                    fedora.modifyObjectLabel(currentNodePid, "page-" + nameOfNode, COMMENT);
+                    modifyObjectLabel(currentNodePid, "page-" + nameOfNode);
                     previousPageName = nameOfNode;
                     break;
                 case BRIK:
-                    fedora.modifyObjectLabel(currentNodePid, nameOfNode, COMMENT);
+                    modifyObjectLabel(currentNodePid, nameOfNode);
                     previousBrikName = nameOfNode;
                     break;
                 case BRIK_IMAGE:
-                    fedora.modifyObjectLabel(currentNodePid, "brik-image-" + previousBrikName, COMMENT);
+                    modifyObjectLabel(currentNodePid, "brik-image-" + previousBrikName);
                     break;
                 case PAGE_IMAGE:
-                    fedora.modifyObjectLabel(currentNodePid, "page-image-" + previousPageName, COMMENT);
+                    modifyObjectLabel(currentNodePid, "page-image-" + previousPageName);
                     break;
             }
         } catch (Exception e) {
             throw new IllegalStateException("Call to enhanced Fedora's modifyObjectLabel() failed on node '"
                     + getCurrentNode().getName() + "' with PID '" + currentNodePid + "'");
+        }
+    }
+
+    private void modifyObjectLabel(String pid, String label)
+            throws BackendInvalidCredsException, BackendMethodFailedException, BackendInvalidResourceException {
+        int tryCount = 1;
+        while (true) {
+            try {
+                fedora.modifyObjectLabel(pid, label, COMMENT);
+                return;
+            } catch (BackendMethodFailedException e) {
+                if (tryCount < maxTries) {
+                    log.warn("Unable to change label for {}. Retrying.", pid, e);
+                    tryCount++;
+                } else {
+                    throw e;
+                }
+            }
         }
     }
 }

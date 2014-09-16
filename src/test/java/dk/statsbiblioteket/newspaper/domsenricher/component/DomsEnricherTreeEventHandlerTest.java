@@ -45,7 +45,7 @@ public class DomsEnricherTreeEventHandlerTest {
                 batchRelsExt(
                         batchPid, null, null, null)
                                                                                     );
-        DomsEnricherTreeEventHandler enricher = new DomsEnricherTreeEventHandler(fedora, results);
+        DomsEnricherTreeEventHandler enricher = new DomsEnricherTreeEventHandler(fedora, results, 3);
 
         enricher.handleNodeBegin(new NodeBeginsParsingEvent(name, batchPid));
         enricher.handleNodeEnd(new NodeEndParsingEvent(name, batchPid));
@@ -84,7 +84,7 @@ public class DomsEnricherTreeEventHandlerTest {
                         filmPid, null, null, null)
                                                                                    );
 
-        DomsEnricherTreeEventHandler enricher = new DomsEnricherTreeEventHandler(fedora, results);
+        DomsEnricherTreeEventHandler enricher = new DomsEnricherTreeEventHandler(fedora, results, 3);
 
         enricher.handleNodeBegin(new NodeBeginsParsingEvent(name, batchPid));
         enricher.handleNodeBegin(new NodeBeginsParsingEvent(filmName, filmPid));
@@ -157,7 +157,7 @@ public class DomsEnricherTreeEventHandlerTest {
                         edition2, null, null, null)
                                                                                     );
 
-        DomsEnricherTreeEventHandler enricher = new DomsEnricherTreeEventHandler(fedora, results);
+        DomsEnricherTreeEventHandler enricher = new DomsEnricherTreeEventHandler(fedora, results, 3);
 
         enricher.handleNodeBegin(new NodeBeginsParsingEvent(name, batchPid));
         enricher.handleNodeBegin(new NodeBeginsParsingEvent(filmName, filmPid));
@@ -289,7 +289,7 @@ public class DomsEnricherTreeEventHandlerTest {
                                                                                   );
 
 
-        DomsEnricherTreeEventHandler enricher = new DomsEnricherTreeEventHandler(fedora, results);
+        DomsEnricherTreeEventHandler enricher = new DomsEnricherTreeEventHandler(fedora, results, 3);
 
         enricher.handleNodeBegin(new NodeBeginsParsingEvent(name, batchPid));
         enricher.handleNodeBegin(new NodeBeginsParsingEvent(filmName, filmPid));
@@ -499,7 +499,7 @@ public class DomsEnricherTreeEventHandlerTest {
                                                                                   );
 
 
-        DomsEnricherTreeEventHandler enricher = new DomsEnricherTreeEventHandler(fedora, results);
+        DomsEnricherTreeEventHandler enricher = new DomsEnricherTreeEventHandler(fedora, results, 3);
 
         enricher.handleNodeBegin(new NodeBeginsParsingEvent(name, batchPid));
 

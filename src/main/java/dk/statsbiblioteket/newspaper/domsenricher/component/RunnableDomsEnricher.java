@@ -45,12 +45,13 @@ public class RunnableDomsEnricher extends TreeProcessorAbstractRunnableComponent
         logger.debug("Beginning enrichment of " + batch.getFullID());
         List<TreeEventHandler> handlers = new ArrayList<>();
 
-        handlers.add(new DomsEnricherTreeEventHandler(eFedora, resultCollector));
-        handlers.add(new DomsLabelEnricherTreeEventHandler(eFedora));
+        int tries = Integer.parseInt(getProperties().getProperty(ConfigConstants.FEDORA_RETRIES, "3"));
+        int maxThreads = Integer.parseInt(getProperties().getProperty(ConfigConstants.THREADS_PER_BATCH, "1"));
+        handlers.add(new DomsEnricherTreeEventHandler(eFedora, resultCollector, tries));
+        handlers.add(new DomsLabelEnricherTreeEventHandler(eFedora, tries));
         if (getProperties().getProperty(Constants.PUBLISH, "true").equalsIgnoreCase("true") ){
             handlers.add(new DomsPublisherEventHandler(eFedora,
-                    resultCollector,
-                    Integer.parseInt(getProperties().getProperty(ConfigConstants.THREADS_PER_BATCH, "1"))));
+                    resultCollector, maxThreads, tries));
         }
 
         EventRunner eventRunner = new EventRunner(createIterator(batch), handlers, resultCollector);

@@ -24,8 +24,8 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
     private NodeEnricherFactory nodeEnricherFactory;
 
 
-    public DomsEnricherTreeEventHandler(EnhancedFedora fedora, ResultCollector resultCollector) {
-        nodeEnricherFactory = new NodeEnricherFactory(fedora);
+    public DomsEnricherTreeEventHandler(EnhancedFedora fedora, ResultCollector resultCollector, int maxTries) {
+        nodeEnricherFactory = new NodeEnricherFactory(fedora, maxTries);
         this.resultCollector = resultCollector;
     }
 
