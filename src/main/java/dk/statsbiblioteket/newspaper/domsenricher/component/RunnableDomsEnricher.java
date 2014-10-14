@@ -41,7 +41,7 @@ public class RunnableDomsEnricher extends TreeProcessorAbstractRunnableComponent
     }
 
     @Override
-    public void doWorkOnBatch(Batch batch, ResultCollector resultCollector) throws IOException {
+    public void doWorkOnItem(Batch batch, ResultCollector resultCollector) throws IOException {
         logger.debug("Beginning enrichment of " + batch.getFullID());
         List<TreeEventHandler> handlers = new ArrayList<>();
 

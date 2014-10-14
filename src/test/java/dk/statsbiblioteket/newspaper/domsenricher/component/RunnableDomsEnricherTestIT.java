@@ -95,7 +95,7 @@ public class RunnableDomsEnricherTestIT {
         props.setProperty(ConfigConstants.ITERATOR_USE_FILESYSTEM, "true");
         RunnablePromptDomsIngester ingester = new RunnablePromptDomsIngester(props, fedora);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
-        ingester.doWorkOnBatch(batch, resultCollector);
+        ingester.doWorkOnItem(batch, resultCollector);
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
     }
 
@@ -111,7 +111,7 @@ public class RunnableDomsEnricherTestIT {
      * @throws Exception
      */
     @Test(groups = "externalTest")
-    public void testDoWorkOnBatch() throws Exception {
+    public void testdoWorkOnItem() throws Exception {
         props.setProperty(ConfigConstants.ITERATOR_USE_FILESYSTEM, "" +
                 "" +
                 "" +
@@ -127,7 +127,7 @@ public class RunnableDomsEnricherTestIT {
             }
         };
 
-        enricher.doWorkOnBatch(batch, resultCollector);
+        enricher.doWorkOnItem(batch, resultCollector);
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
 
         cleanRoundtripFromDoms();

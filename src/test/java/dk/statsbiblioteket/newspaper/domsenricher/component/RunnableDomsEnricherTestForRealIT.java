@@ -68,14 +68,14 @@ public class RunnableDomsEnricherTestForRealIT {
      * @throws Exception
      */
     @Test(groups = "integrationTest", enabled = false)
-    public void testDoWorkOnBatch() throws Exception {
+    public void testdoWorkOnItem() throws Exception {
         props.setProperty(ConfigConstants.ITERATOR_USE_FILESYSTEM, "" +
                 "" +
                 "" +
                 "false");
         RunnableDomsEnricher enricher = new RunnableDomsEnricher(props, fedora);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");
-        enricher.doWorkOnBatch(batch, resultCollector);
+        enricher.doWorkOnItem(batch, resultCollector);
         assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
         RecursiveFedoraVisitor<Validation> validator = new RecursiveFedoraValidator(fedora);
         Map<String, Validation> validationMap = null;
