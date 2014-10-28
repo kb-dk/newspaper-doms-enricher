@@ -34,7 +34,7 @@ public class NodeEnricherFactory {
 
     private void createEnrichers() {
         nodeEnricherMap = new HashMap<>();
-        nodeEnricherMap.put(NodeType.BATCH, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP));
+        nodeEnricherMap.put(NodeType.BATCH, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_ITEM, NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP));
         nodeEnricherMap.put(NodeType.WORKSHIFT_ISO_TARGET, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_WORKSHIFT));
         nodeEnricherMap.put(NodeType.WORKSHIFT_TARGET, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_PAGE));
         nodeEnricherMap.put(NodeType.TARGET_IMAGE, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));

@@ -23,6 +23,7 @@ public class NodeEnricher {
     public static final String UUID = "uuid:";
     public static final String DOMS_CONTENT_MODEL_DOMS = "doms:ContentModel_DOMS";
     public static final String DOMS_CONTENT_MODEL_ROUND_TRIP = "doms:ContentModel_RoundTrip";
+    public static final String DOMS_CONTENT_MODEL_ITEM = "doms:ContentModel_Item";
     public static final String DOMS_CONTENT_MODEL_FILM = "doms:ContentModel_Film";
     public static final String DOMS_NAMESPACE = "http://doms.statsbiblioteket.dk/relations/default/0/1/#";
     public static final String DOMS_CONTENT_MODEL_EDITION = "doms:ContentModel_Edition";

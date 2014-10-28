@@ -60,6 +60,7 @@ public class DomsEnricherTreeEventHandlerTest {
                         null,
                         Arrays.asList(
                                 NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_ITEM,
                                 NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP)).getBytes(),
                 new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
                 null
@@ -115,6 +116,7 @@ public class DomsEnricherTreeEventHandlerTest {
                         )
                                              ), Arrays.asList(
                         NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                        NodeEnricher.DOMS_CONTENT_MODEL_ITEM,
                         NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP)
                                                    );
         verify(fedora).modifyDatastreamByValue(
@@ -240,6 +242,7 @@ public class DomsEnricherTreeEventHandlerTest {
                             ),
                         Arrays.asList(
                                 NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_ITEM,
                                 NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP)
                             ).getBytes(), new ArrayList<String>(),
                 NodeEnricher.APPLICATION_RDF_XML,
@@ -828,6 +831,7 @@ public class DomsEnricherTreeEventHandlerTest {
                             ),
                         Arrays.asList(
                                 NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_ITEM,
                                 NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP)
                             ).getBytes(), new ArrayList<String>(),
                 NodeEnricher.APPLICATION_RDF_XML,
