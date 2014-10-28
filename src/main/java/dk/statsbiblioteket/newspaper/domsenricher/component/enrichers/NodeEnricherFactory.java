@@ -43,7 +43,7 @@ public class NodeEnricherFactory {
         nodeEnricherMap.put(NodeType.FILM_TARGET, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_PAGE));
         nodeEnricherMap.put(NodeType.ISO_TARGET_IMAGE, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
         nodeEnricherMap.put(NodeType.UNMATCHED, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_UNMATCHED));
-        nodeEnricherMap.put(NodeType.EDITION, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_EDITION));
+        nodeEnricherMap.put(NodeType.EDITION, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_ITEM, NodeEnricher.DOMS_CONTENT_MODEL_EDITION));
         nodeEnricherMap.put(NodeType.PAGE, null);
         nodeEnricherMap.put(NodeType.BRIK, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_BRIK));
         nodeEnricherMap.put(NodeType.BRIK_IMAGE, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
