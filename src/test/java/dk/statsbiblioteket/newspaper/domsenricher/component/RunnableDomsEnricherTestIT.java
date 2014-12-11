@@ -112,25 +112,27 @@ public class RunnableDomsEnricherTestIT {
      */
     @Test(groups = "externalTest")
     public void testdoWorkOnItem() throws Exception {
-        props.setProperty(ConfigConstants.ITERATOR_USE_FILESYSTEM, "" +
-                "" +
-                "" +
-                "false");
-        RunnableDomsEnricher enricher = new RunnableDomsEnricher(props, fedora);
-        ResultCollector resultCollector = new ResultCollector("foo", "bar"){
-            @Override
-            public void addFailure(String reference, String type, String component, String description,
-                                   String... details) {
-                if (!description.contains("Datastream 'CONTENTS' is required by the content model 'doms:ContentModel_Jpeg2000File'")) {
-                    super.addFailure(reference, type, component, description, details);
+        try {
+            props.setProperty(ConfigConstants.ITERATOR_USE_FILESYSTEM, "" +
+                                                                       "" +
+                                                                       "" +
+                                                                       "false");
+            RunnableDomsEnricher enricher = new RunnableDomsEnricher(props, fedora);
+            ResultCollector resultCollector = new ResultCollector("foo", "bar") {
+                @Override
+                public void addFailure(String reference, String type, String component, String description, String... details) {
+                    if (!description.contains("Datastream 'CONTENTS' is required by the content model 'doms:ContentModel_Jpeg2000File'")) {
+                        super.addFailure(reference, type, component, description, details);
+                    }
                 }
-            }
-        };
+            };
 
-        enricher.doWorkOnItem(batch, resultCollector);
-        assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
+            enricher.doWorkOnItem(batch, resultCollector);
+            assertTrue(resultCollector.isSuccess(), resultCollector.toReport());
+        } finally {
+            cleanRoundtripFromDoms();
+        }
 
-        cleanRoundtripFromDoms();
     }
 
     /**
