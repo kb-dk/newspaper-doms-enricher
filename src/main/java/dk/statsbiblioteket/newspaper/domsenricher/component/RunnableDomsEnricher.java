@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
+import dk.statsbiblioteket.doms.webservices.authentication.Credentials;
 import dk.statsbiblioteket.medieplatform.autonomous.ConfigConstants;
 import dk.statsbiblioteket.medieplatform.autonomous.TreeProcessorAbstractRunnableComponent;
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -49,6 +51,7 @@ public class RunnableDomsEnricher extends TreeProcessorAbstractRunnableComponent
         int maxThreads = Integer.parseInt(getProperties().getProperty(ConfigConstants.THREADS_PER_BATCH, "1"));
         handlers.add(new DomsEnricherTreeEventHandler(eFedora, resultCollector, tries));
         handlers.add(new DomsLabelEnricherTreeEventHandler(eFedora, tries));
+        handlers.add(new MimetypeEnricher(Arrays.asList("FILM","MIX","MODS","ALTO","EDITION"),getProperties().getProperty(ConfigConstants.DOMS_URL),new Credentials(getProperties().getProperty(ConfigConstants.DOMS_USERNAME),getProperties().getProperty(ConfigConstants.DOMS_PASSWORD))));
         if (getProperties().getProperty(Constants.PUBLISH, "true").equalsIgnoreCase("true") ){
             handlers.add(new DomsPublisherEventHandler(eFedora,
                     resultCollector, maxThreads, tries));
