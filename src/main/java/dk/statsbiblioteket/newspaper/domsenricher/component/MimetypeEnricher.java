@@ -1,10 +1,7 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import dk.statsbibliokeket.newspaper.treenode.TreeNodeState;
-import dk.statsbiblioteket.doms.webservices.authentication.Credentials;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;
@@ -19,17 +16,15 @@ import java.util.Map;
 public class MimetypeEnricher extends TreeNodeState{
 
     protected static final String FEDORA_NAMESPACE = "http://www.fedora.info/definitions/1/0/access/";
-    private final WebResource restApi;
     private final XPathSelector xpath;
     private Collection<String> xmlDatastreams;
+    private final SpecializedFedora fedora;
 
-    public MimetypeEnricher(Collection<String> xmlDatastreams, String location, Credentials creds) {
+    public MimetypeEnricher(Collection<String> xmlDatastreams, SpecializedFedora fedora) {
         this.xmlDatastreams = xmlDatastreams;
+        this.fedora = fedora;
         xpath = DOM.createXPathSelector("f", FEDORA_NAMESPACE);
 
-        Client client = Client.create();
-        restApi = client.resource(location + "/objects/");
-        restApi.addFilter(new HTTPBasicAuthFilter(creds.getUsername(), creds.getPassword()));
     }
 
     @Override
@@ -46,23 +41,13 @@ public class MimetypeEnricher extends TreeNodeState{
         for (Map.Entry<String, String> stringStringEntry : datastreamMimetypes.entrySet()) {
             if (xmlDatastreams.contains(stringStringEntry.getKey())) {
                 if (!stringStringEntry.getValue().equals("text/xml")) {
-                    fixDatastream(stringStringEntry.getKey(), event);
+                    fedora.fixDatastream(stringStringEntry.getKey(), event.getLocation());
                 }
             }
         }
     }
 
-    /**
-     * Set the datastream mimetype to text/xml
-     * @param datastream name
-     * @param event the event, ie. the pid
-     */
-    private void fixDatastream(String datastream, NodeEndParsingEvent event) {
-        restApi.path(event.getLocation())
-                                       .path("/datastreams/").path(datastream)
-                                       .queryParam("mimeType", "text/xml")
-                                       .put();
-    }
+
 
     /**
      * Get a map of datastream ID to datastream mimetype
@@ -70,10 +55,7 @@ public class MimetypeEnricher extends TreeNodeState{
      * @return a map of datastreams and mimetypes
      */
     private Map<String, String> getDatastreamMimetypes(NodeEndParsingEvent event) {
-        String datastreamsXml = restApi.path(event.getLocation())
-                                       .path("/datastreams")
-                                       .queryParam("format", "xml")
-                                       .get(String.class);
+        String datastreamsXml = fedora.getDatastreamsDom(event.getLocation());
         Document dom = DOM.stringToDOM(datastreamsXml, true);
         NodeList datastreams = xpath.selectNodeList(dom, "/f:objectDatastreams/f:datastream");
         HashMap<String, String> result = new HashMap<>();
@@ -87,4 +69,5 @@ public class MimetypeEnricher extends TreeNodeState{
         }
         return result;
     }
+
 }

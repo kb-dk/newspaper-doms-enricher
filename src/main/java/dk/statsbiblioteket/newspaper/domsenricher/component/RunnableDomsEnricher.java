@@ -51,7 +51,10 @@ public class RunnableDomsEnricher extends TreeProcessorAbstractRunnableComponent
         int maxThreads = Integer.parseInt(getProperties().getProperty(ConfigConstants.THREADS_PER_BATCH, "1"));
         handlers.add(new DomsEnricherTreeEventHandler(eFedora, resultCollector, tries));
         handlers.add(new DomsLabelEnricherTreeEventHandler(eFedora, tries));
-        handlers.add(new MimetypeEnricher(Arrays.asList("FILM","MIX","MODS","ALTO","EDITION"),getProperties().getProperty(ConfigConstants.DOMS_URL),new Credentials(getProperties().getProperty(ConfigConstants.DOMS_USERNAME),getProperties().getProperty(ConfigConstants.DOMS_PASSWORD))));
+        handlers.add(new MimetypeEnricher(Arrays.asList("FILM", "MIX", "MODS", "ALTO", "EDITION"),
+                                                 new SpecializedFedora(getProperties().getProperty(ConfigConstants.DOMS_URL),
+                                                                              new Credentials(getProperties().getProperty(ConfigConstants.DOMS_USERNAME),
+                                                                                                     getProperties().getProperty(ConfigConstants.DOMS_PASSWORD)))));
         if (getProperties().getProperty(Constants.PUBLISH, "true").equalsIgnoreCase("true") ){
             handlers.add(new DomsPublisherEventHandler(eFedora,
                     resultCollector, maxThreads, tries));
