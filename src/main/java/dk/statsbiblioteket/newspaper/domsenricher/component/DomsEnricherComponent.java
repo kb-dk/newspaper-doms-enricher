@@ -2,6 +2,7 @@ package dk.statsbiblioteket.newspaper.domsenricher.component;
 
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedoraImpl;
 import dk.statsbiblioteket.doms.webservices.authentication.Credentials;
+import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.NewspaperBatchAutonomousComponentUtils;
 import dk.statsbiblioteket.medieplatform.autonomous.CallResult;
 import dk.statsbiblioteket.medieplatform.autonomous.ConfigConstants;
@@ -51,8 +52,8 @@ public class DomsEnricherComponent {
         EnhancedFedoraImpl eFedora =
                 new EnhancedFedoraImpl(creds, fedoraLocation, properties.getProperty(ConfigConstants.DOMS_PIDGENERATOR_URL), null);
 
-        RunnableComponent component = new RunnableDomsEnricher(properties,eFedora);
-        CallResult result = NewspaperBatchAutonomousComponentUtils.startAutonomousComponent(properties, component);
+        RunnableComponent<Batch> component = new RunnableDomsEnricher(properties,eFedora);
+        CallResult<Batch> result = NewspaperBatchAutonomousComponentUtils.startAutonomousComponent(properties, component);
         log.info("result was: " + result);
         return result.containsFailures();
 
