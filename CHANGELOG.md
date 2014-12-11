@@ -1,3 +1,6 @@
+1.5 
+* When encountering a MIX,MODS,ALTO,EDITION or FILM datastream, change the mimetype to text/xml
+
 1.4
 * Use newest version of item event framework. No functional changes for this module.
 * Configuration has been extended and changed and example config has been updated. Please update your configuration files.
