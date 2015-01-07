@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <configuration scan="true">
+
   <property name="LOGFILE" value="${user.home}/logs/doms-enricher.log"/>
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <prudent>true</prudent>
