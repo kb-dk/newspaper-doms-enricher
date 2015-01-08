@@ -44,6 +44,7 @@ public class NodeEnricher {
     public static final String DOMS_CONTENT_MODEL_BRIK = "doms:ContentModel_Brik";
     public static final String HAS_BRIK = "hasBrik";
     public static final String DOMS_CONTENT_MODEL_FILE = "doms:ContentModel_File";
+    public static final int RETRY_DELAY = 100;
     static Logger logger = LoggerFactory.getLogger(NodeEnricher.class);
     private final String contentModelDoms = "doms:ContentModel_DOMS";
     ArrayList<String> contentModels;
@@ -86,6 +87,11 @@ public class NodeEnricher {
             } catch (BackendMethodFailedException e) {
                 if (tryCount < maxTries) {
                     logger.warn("Unable to get RELS_EXT datastream from {}. Retrying.", event.getLocation(), e);
+                    try {
+                        Thread.sleep(NodeEnricher.RETRY_DELAY * (2 << tryCount));
+                    } catch (InterruptedException e1) {
+                        // Ignore
+                    }
                     tryCount++;
                 } else {
                     throw new RuntimeException(e);
@@ -120,6 +126,11 @@ public class NodeEnricher {
             } catch (BackendMethodFailedException e) {
                 if (tries < maxTries) {
                     logger.warn("Unable to modify RELS-EXT datastream. Retrying.");
+                    try {
+                        Thread.sleep(NodeEnricher.RETRY_DELAY * (2 << tries));
+                    } catch (InterruptedException e1) {
+                        // Ignore
+                    }
                     tries++;
                 } else {
                     throw new RuntimeException(e);

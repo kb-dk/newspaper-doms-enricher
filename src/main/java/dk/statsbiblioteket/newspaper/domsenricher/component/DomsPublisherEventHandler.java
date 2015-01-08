@@ -129,6 +129,11 @@ public class DomsPublisherEventHandler extends TreeNodeState {
                 } catch (BackendMethodFailedException e) {
                     if (tryCount < tries) {
                         logger.warn("Failed publishing pid '{}', retrying", pid, e);
+                        try {
+                            Thread.sleep(NodeEnricher.RETRY_DELAY * (2 << tryCount));
+                        } catch (InterruptedException e1) {
+                            // Ignore
+                        }
                         tryCount++;
                     } else {
                         throw e;

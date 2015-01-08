@@ -54,7 +54,7 @@ public class RunnableDomsEnricherTestIT {
         generateTestBatch();
         batch = new Batch(BATCH_ID, ROUNDTRIP_NO);
         props.setProperty(ConfigConstants.ITERATOR_FILESYSTEM_BATCHES_FOLDER, "target");
-        IngestRoundtripInDoms();
+        ingestRoundtripInDoms();
     }
 
     @AfterMethod(groups = "externalTest")
@@ -91,7 +91,7 @@ public class RunnableDomsEnricherTestIT {
     }
 
 
-    private void IngestRoundtripInDoms() {
+    private void ingestRoundtripInDoms() {
         props.setProperty(ConfigConstants.ITERATOR_USE_FILESYSTEM, "true");
         RunnablePromptDomsIngester ingester = new RunnablePromptDomsIngester(props, fedora);
         ResultCollector resultCollector = new ResultCollector("foo", "bar");

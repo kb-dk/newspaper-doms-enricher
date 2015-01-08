@@ -116,6 +116,11 @@ public class DomsLabelEnricherTreeEventHandler extends TreeNodeStateWithChildren
             } catch (BackendMethodFailedException e) {
                 if (tryCount < maxTries) {
                     log.warn("Unable to change label for {}. Retrying.", pid, e);
+                    try {
+                        Thread.sleep(NodeEnricher.RETRY_DELAY * (2 << tryCount));
+                    } catch (InterruptedException e1) {
+                        // Ignore
+                    }
                     tryCount++;
                 } else {
                     throw e;
