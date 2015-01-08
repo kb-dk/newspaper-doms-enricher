@@ -26,11 +26,9 @@ public class DomsLabelEnricherTreeEventHandler extends TreeNodeStateWithChildren
     private String previousPageName;
     private static final Pattern AVIS_PATTERN = Pattern.compile("(.*)-[0-9]*-[0-9]*$");
     private Logger log = LoggerFactory.getLogger(getClass());
-    private final int maxTries;
 
-    public DomsLabelEnricherTreeEventHandler(EnhancedFedora fedora, int maxTries) {
+    public DomsLabelEnricherTreeEventHandler(EnhancedFedora fedora) {
         this.fedora = fedora;
-        this.maxTries = maxTries;
         avisID = "";
     }
 
@@ -108,24 +106,7 @@ public class DomsLabelEnricherTreeEventHandler extends TreeNodeStateWithChildren
 
     private void modifyObjectLabel(String pid, String label)
             throws BackendInvalidCredsException, BackendMethodFailedException, BackendInvalidResourceException {
-        int tryCount = 1;
-        while (true) {
-            try {
-                fedora.modifyObjectLabel(pid, label, COMMENT);
-                return;
-            } catch (BackendMethodFailedException e) {
-                if (tryCount < maxTries) {
-                    log.warn("Unable to change label for {}. Retrying.", pid, e);
-                    try {
-                        Thread.sleep(NodeEnricher.RETRY_DELAY * (2 << tryCount));
-                    } catch (InterruptedException e1) {
-                        // Ignore
-                    }
-                    tryCount++;
-                } else {
-                    throw e;
-                }
-            }
-        }
+        fedora.modifyObjectLabel(pid, label, COMMENT);
+        return;
     }
 }

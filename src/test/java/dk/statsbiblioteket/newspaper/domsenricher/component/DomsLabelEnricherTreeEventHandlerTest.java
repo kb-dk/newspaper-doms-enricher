@@ -82,7 +82,7 @@ public class DomsLabelEnricherTreeEventHandlerTest {
                                          new NodeEndParsingEvent("WORKSHIFT-ISO-TARGET", "uuid:00000000-0000-0000-0000-000000000016"),
                                          new NodeEndParsingEvent("B4004-RT1", "uuid:00000000-0000-0000-0000-000000000001"),
                                          null);
-        TreeEventHandler labelHandler = new DomsLabelEnricherTreeEventHandler(fedora, 3);
+        TreeEventHandler labelHandler = new DomsLabelEnricherTreeEventHandler(fedora);
         new EventRunner(iterator, Arrays.asList(labelHandler), resultCollector).run();
         verify(fedora).modifyObjectLabel(eq("uuid:00000000-0000-0000-0000-000000000001"), eq("batch-B4004-RT1"), eq(NodeEnricher.COMMENT));
         verify(fedora).modifyObjectLabel(eq("uuid:00000000-0000-0000-0000-000000000002"), eq("film-newspaper-4004-1"), eq(NodeEnricher.COMMENT));
@@ -108,7 +108,7 @@ public class DomsLabelEnricherTreeEventHandlerTest {
 
     @Test
     public void testprocessNodeBeginPage() throws Exception {
-        DefaultTreeEventHandler labelHandler = new DomsLabelEnricherTreeEventHandler(fedora, 3);
+        DefaultTreeEventHandler labelHandler = new DomsLabelEnricherTreeEventHandler(fedora);
 
         NodeBeginsParsingEvent page = new NodeBeginsParsingEvent("blabla/mypage");
         labelHandler.handleNodeBegin(page);

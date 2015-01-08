@@ -29,7 +29,7 @@ public class DomsPublisherEventHandlerTest {
         EnhancedFedora enhancedFedoraMock = mock(EnhancedFedora.class);
         ResultCollector resultCollectorMock = mock(ResultCollector.class);
         DomsPublisherEventHandler domsPublisherEventHandler = new DomsPublisherEventHandler(enhancedFedoraMock,
-                                                                                            resultCollectorMock, 1, 3);
+                                                                                            resultCollectorMock, 1);
         domsPublisherEventHandler.handleNodeBegin(new NodeBeginsParsingEvent("B000000000000-RT1", "uuid:1"));
         domsPublisherEventHandler
                 .handleNodeBegin(new NodeBeginsParsingEvent("B000000000000-RT1/000000000000-1", "uuid:2"));
@@ -55,8 +55,7 @@ public class DomsPublisherEventHandlerTest {
         int tries = 3;
         ResultCollector resultCollectorMock = mock(ResultCollector.class);
         DomsPublisherEventHandler domsPublisherEventHandler = new DomsPublisherEventHandler(enhancedFedoraMock,
-                                                                                            resultCollectorMock, 1,
-                                                                                            tries);
+                                                                                            resultCollectorMock, 1);
         domsPublisherEventHandler.handleNodeBegin(new NodeBeginsParsingEvent("B000000000000-RT1", "uuid:1"));
         domsPublisherEventHandler
                 .handleNodeBegin(new NodeBeginsParsingEvent("B000000000000-RT1/000000000000-1", "uuid:2"));
@@ -84,8 +83,7 @@ public class DomsPublisherEventHandlerTest {
         int tries = 3;
         ResultCollector resultCollectorMock = mock(ResultCollector.class);
         DomsPublisherEventHandler domsPublisherEventHandler = new DomsPublisherEventHandler(enhancedFedoraMock,
-                                                                                            resultCollectorMock, 1,
-                                                                                            tries);
+                                                                                            resultCollectorMock, 1);
         domsPublisherEventHandler.handleNodeBegin(new NodeBeginsParsingEvent("B000000000000-RT1", "uuid:1"));
         domsPublisherEventHandler
                 .handleNodeBegin(new NodeBeginsParsingEvent("B000000000000-RT1/000000000000-1", "uuid:2"));
@@ -116,8 +114,7 @@ public class DomsPublisherEventHandlerTest {
         int tries = 1;
         ResultCollector resultCollectorMock = mock(ResultCollector.class);
         DomsPublisherEventHandler domsPublisherEventHandler = new DomsPublisherEventHandler(enhancedFedoraMock,
-                                                                                            resultCollectorMock, 1,
-                                                                                            tries);
+                                                                                            resultCollectorMock, 1);
         domsPublisherEventHandler.handleNodeBegin(new NodeBeginsParsingEvent("B000000000000-RT1", "uuid:1"));
         domsPublisherEventHandler
                 .handleNodeBegin(new NodeBeginsParsingEvent("B000000000000-RT1/000000000000-1", "uuid:2"));

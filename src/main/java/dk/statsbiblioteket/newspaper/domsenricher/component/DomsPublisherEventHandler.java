@@ -33,19 +33,16 @@ public class DomsPublisherEventHandler extends TreeNodeState {
 
     private final ResultCollector resultCollector;
     private final int maxThreads;
-    private final int tries;
     public List<Pair<String,String>> pids = new ArrayList<>();
 
     public boolean shouldPublish = true;
     private static final String comment = NodeEnricher.COMMENT;
     private EnhancedFedora enhancedFedora;
 
-    public DomsPublisherEventHandler(EnhancedFedora enhancedFedora, ResultCollector resultCollector, int maxThreads,
-                                     int tries) {
+    public DomsPublisherEventHandler(EnhancedFedora enhancedFedora, ResultCollector resultCollector, int maxThreads) {
         this.enhancedFedora = enhancedFedora;
         this.resultCollector = resultCollector;
         this.maxThreads = maxThreads;
-        this.tries = tries;
     }
 
     @Override
@@ -120,26 +117,9 @@ public class DomsPublisherEventHandler extends TreeNodeState {
 
         @Override
         public String call() throws Exception {
-            int tryCount = 1;
-            while (true) {
-                try {
-                    enhancedFedora.modifyObjectState(pid, "A", comment);
-                    logger.debug("Published {}",pid);
-                    return pid;
-                } catch (BackendMethodFailedException e) {
-                    if (tryCount < tries) {
-                        logger.warn("Failed publishing pid '{}', retrying", pid, e);
-                        try {
-                            Thread.sleep(NodeEnricher.RETRY_DELAY * (2 << tryCount));
-                        } catch (InterruptedException e1) {
-                            // Ignore
-                        }
-                        tryCount++;
-                    } else {
-                        throw e;
-                    }
-                }
-            }
+            enhancedFedora.modifyObjectState(pid, "A", comment);
+            logger.debug("Published {}",pid);
+            return pid;
         }
 
         private String toString(Validation result) throws JAXBException {

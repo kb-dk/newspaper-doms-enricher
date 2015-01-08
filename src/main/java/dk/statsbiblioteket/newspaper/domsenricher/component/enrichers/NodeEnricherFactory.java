@@ -13,7 +13,6 @@ import java.util.Map;
  */
 public class NodeEnricherFactory {
 
-    private final int maxTries;
     private Map<NodeType, NodeEnricher> nodeEnricherMap;
 
     private EnhancedFedora fedora;
@@ -24,37 +23,36 @@ public class NodeEnricherFactory {
     /**
      * Create a factory from which we can obtain instances of the required node-enrichers.
      * @param fedora
-     * @param maxTries
+     *
      */
-    public NodeEnricherFactory(EnhancedFedora fedora, int maxTries) {
+    public NodeEnricherFactory(EnhancedFedora fedora) {
         this.fedora = fedora;
         createEnrichers();
-        this.maxTries = maxTries;
     }
 
     private void createEnrichers() {
         nodeEnricherMap = new HashMap<>();
-        nodeEnricherMap.put(NodeType.BATCH, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_ITEM, NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP));
-        nodeEnricherMap.put(NodeType.WORKSHIFT_ISO_TARGET, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_WORKSHIFT));
-        nodeEnricherMap.put(NodeType.WORKSHIFT_TARGET, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_PAGE));
-        nodeEnricherMap.put(NodeType.TARGET_IMAGE, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
-        nodeEnricherMap.put(NodeType.FILM, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_FILM));
-        nodeEnricherMap.put(NodeType.FILM_ISO_TARGET, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_ISO_TARGET));
-        nodeEnricherMap.put(NodeType.FILM_TARGET, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_PAGE));
-        nodeEnricherMap.put(NodeType.ISO_TARGET_IMAGE, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
-        nodeEnricherMap.put(NodeType.UNMATCHED, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_UNMATCHED));
-        nodeEnricherMap.put(NodeType.EDITION, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_ITEM, NodeEnricher.DOMS_CONTENT_MODEL_EDITION));
+        nodeEnricherMap.put(NodeType.BATCH, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_ITEM, NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP));
+        nodeEnricherMap.put(NodeType.WORKSHIFT_ISO_TARGET, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_WORKSHIFT));
+        nodeEnricherMap.put(NodeType.WORKSHIFT_TARGET, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_PAGE));
+        nodeEnricherMap.put(NodeType.TARGET_IMAGE, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
+        nodeEnricherMap.put(NodeType.FILM, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_FILM));
+        nodeEnricherMap.put(NodeType.FILM_ISO_TARGET, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_ISO_TARGET));
+        nodeEnricherMap.put(NodeType.FILM_TARGET, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_PAGE));
+        nodeEnricherMap.put(NodeType.ISO_TARGET_IMAGE, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
+        nodeEnricherMap.put(NodeType.UNMATCHED, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_UNMATCHED));
+        nodeEnricherMap.put(NodeType.EDITION, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_ITEM, NodeEnricher.DOMS_CONTENT_MODEL_EDITION));
         nodeEnricherMap.put(NodeType.PAGE, null);
-        nodeEnricherMap.put(NodeType.BRIK, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_BRIK));
-        nodeEnricherMap.put(NodeType.BRIK_IMAGE, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
-        nodeEnricherMap.put(NodeType.PAGE_IMAGE, new NodeEnricher(fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
+        nodeEnricherMap.put(NodeType.BRIK, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_BRIK));
+        nodeEnricherMap.put(NodeType.BRIK_IMAGE, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
+        nodeEnricherMap.put(NodeType.PAGE_IMAGE, new NodeEnricher(fedora, NodeEnricher.DOMS_CONTENT_MODEL_FILE, NodeEnricher.DOMS_CONTENT_MODEL_JPEG2000_FILE));
         unmatchedPage = new NodeEnricher(
-                fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_PAGE);
+                fedora, NodeEnricher.DOMS_CONTENT_MODEL_PAGE);
         editionPage = new NodeEnricher(
-                fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_PAGE,
+                fedora, NodeEnricher.DOMS_CONTENT_MODEL_PAGE,
                 NodeEnricher.DOMS_CONTENT_MODEL_EDITION_PAGE);
          missingPage = new NodeEnricher(
-                fedora, maxTries, NodeEnricher.DOMS_CONTENT_MODEL_EDITION_PAGE);
+                fedora, NodeEnricher.DOMS_CONTENT_MODEL_EDITION_PAGE);
     }
 
     private NodeEnricher getNodeEnricher(NodeType nodeType) {

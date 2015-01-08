@@ -31,7 +31,7 @@ public class NodeEnricherTest {
 
     @Test
     public void testEnrich() throws Exception {
-        NodeEnricherFactory factory = new NodeEnricherFactory(fedora, 3);
+        NodeEnricherFactory factory = new NodeEnricherFactory(fedora);
         final String pid = "uuid:foobar";
         ParsingEvent event = new NodeBeginsParsingEvent("B400022028241-RT1", pid);
         TreeNodeWithChildren treeNodeWithChildren = new TreeNodeWithChildren(event.getName(), NodeType.BATCH, null, event.getLocation());
