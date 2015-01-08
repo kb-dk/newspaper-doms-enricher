@@ -1,3 +1,7 @@
+1.6
+* Logback config file changed to correct pattern
+* Fixed the Fedora 409 Exception with exponential backoff and retries
+
 1.5 
 * When encountering a MIX,MODS,ALTO,EDITION or FILM datastream, change the mimetype to text/xml
 
