@@ -1,7 +1,7 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component.enrichers;
 
-import dk.statsbibliokeket.newspaper.treenode.NodeType;
-import dk.statsbibliokeket.newspaper.treenode.TreeNodeWithChildren;
+import dk.statsbiblioteket.newspaper.treenode.NodeType;
+import dk.statsbiblioteket.newspaper.treenode.TreeNodeWithChildren;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsParsingEvent;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.ParsingEvent;

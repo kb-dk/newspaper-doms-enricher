@@ -1,7 +1,7 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
 import com.sun.jersey.api.client.WebResource;
-import dk.statsbibliokeket.newspaper.treenode.TreeNodeState;
+import dk.statsbiblioteket.newspaper.treenode.TreeNodeState;
 import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeEndParsingEvent;
 import dk.statsbiblioteket.util.xml.DOM;
 import dk.statsbiblioteket.util.xml.XPathSelector;

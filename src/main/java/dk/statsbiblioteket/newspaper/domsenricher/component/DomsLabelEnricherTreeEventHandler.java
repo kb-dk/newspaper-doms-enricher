@@ -1,6 +1,6 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
-import dk.statsbibliokeket.newspaper.treenode.TreeNodeStateWithChildren;
+import dk.statsbiblioteket.newspaper.treenode.TreeNodeStateWithChildren;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

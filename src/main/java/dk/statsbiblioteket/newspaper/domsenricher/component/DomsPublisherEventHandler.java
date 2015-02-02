@@ -8,8 +8,8 @@ import dk.statsbiblioteket.medieplatform.autonomous.iterator.common.NodeBeginsPa
 import dk.statsbiblioteket.newspaper.domsenricher.component.enrichers.NodeEnricher;
 import dk.statsbiblioteket.util.Pair;
 
-import dk.statsbibliokeket.newspaper.treenode.NodeType;
-import dk.statsbibliokeket.newspaper.treenode.TreeNodeState;
+import dk.statsbiblioteket.newspaper.treenode.NodeType;
+import dk.statsbiblioteket.newspaper.treenode.TreeNodeState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

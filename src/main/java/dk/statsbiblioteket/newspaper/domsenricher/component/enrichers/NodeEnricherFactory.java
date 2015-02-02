@@ -1,8 +1,8 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component.enrichers;
 
-import dk.statsbibliokeket.newspaper.treenode.NodeType;
-import dk.statsbibliokeket.newspaper.treenode.TreeNode;
-import dk.statsbibliokeket.newspaper.treenode.TreeNodeWithChildren;
+import dk.statsbiblioteket.newspaper.treenode.NodeType;
+import dk.statsbiblioteket.newspaper.treenode.TreeNode;
+import dk.statsbiblioteket.newspaper.treenode.TreeNodeWithChildren;
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedora;
 
 import java.util.HashMap;
