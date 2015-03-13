@@ -28,7 +28,7 @@ import java.util.concurrent.Future;
 
 public class DomsPublisherEventHandler extends TreeNodeState {
 
-    private static Logger logger = LoggerFactory.getLogger(DomsEnricherTreeEventHandler.class);
+    private static Logger logger = LoggerFactory.getLogger(DomsPublisherEventHandler.class);
 
 
     private final ResultCollector resultCollector;
