@@ -1,3 +1,8 @@
+1.7
+* Use newest version of framework
+* Add logging of execution time
+* Remove old content models when enriching
+
 1.6
 * Logback config file changed to correct pattern
 * Fixed the Fedora 409 Exception with exponential backoff and retries
