@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>newspaper-doms-enricher</artifactId>
-    <version>1.7-SNAPSHOT</version>
+    <version>1.7</version>
 
 
     <repositories>
@@ -30,7 +30,7 @@
         <connection>scm:git:https://github.com/statsbiblioteket/newspaper-doms-enricher.git</connection>
         <developerConnection>scm:git:git@github.com:statsbiblioteket/newspaper-doms-enricher.git
         </developerConnection>
-      <tag>HEAD</tag>
+      <tag>newspaper-doms-enricher-1.7</tag>
   </scm>
 
     <dependencies>
@@ -75,17 +75,17 @@
         <dependency>
             <groupId>dk.statsbiblioteket.newspaper</groupId>
             <artifactId>tree-processor-runnable-component</artifactId>
-            <version>2.7-SNAPSHOT</version>
+            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.newspaper</groupId>
             <artifactId>newspaper-autonomous-component</artifactId>
-            <version>2.7-SNAPSHOT</version>
+            <version>2.6</version>
         </dependency>
         <dependency>
           <groupId>dk.statsbiblioteket.newspaper</groupId>
           <artifactId>newspaper-prompt-doms-ingester</artifactId>
-          <version>1.7-SNAPSHOT</version>
+          <version>1.7</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
