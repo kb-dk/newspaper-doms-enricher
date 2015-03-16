@@ -69,6 +69,39 @@ public class DomsEnricherTreeEventHandlerTest {
 
     }
 
+    /**
+     * Test as above, but check that old content models are cleared.
+     */
+    @Test
+    public void testRoundTripEnrichNoChildrenAndOldContentModel() throws Exception {
+
+        when(fedora.getXMLDatastreamContents(eq(batchPid), eq(NodeEnricher.RELS_EXT))).thenReturn(
+                batchRelsExt(
+                        batchPid, null, null, Arrays.asList("info:fedora/doms:ContentModel_WRONG"))
+                                                                                    );
+        DomsEnricherTreeEventHandler enricher = new DomsEnricherTreeEventHandler(fedora, results);
+
+        enricher.handleNodeBegin(new NodeBeginsParsingEvent(name, batchPid));
+        enricher.handleNodeEnd(new NodeEndParsingEvent(name, batchPid));
+        verify(fedora).modifyDatastreamByValue(
+                batchPid, NodeEnricher.RELS_EXT,
+                null,
+                null,
+
+                batchRelsExt(
+                        batchPid,
+                        null,
+                        null,
+                        Arrays.asList(
+                                NodeEnricher.DOMS_CONTENT_MODEL_DOMS,
+                                NodeEnricher.DOMS_CONTENT_MODEL_ITEM,
+                                NodeEnricher.DOMS_CONTENT_MODEL_ROUND_TRIP)).getBytes(),
+                new ArrayList<String>(), NodeEnricher.APPLICATION_RDF_XML, NodeEnricher.COMMENT,
+                null
+                                              );
+
+
+    }
 
     @Test
     public void testRoundTripEnrichWithFilmChild() throws Exception {

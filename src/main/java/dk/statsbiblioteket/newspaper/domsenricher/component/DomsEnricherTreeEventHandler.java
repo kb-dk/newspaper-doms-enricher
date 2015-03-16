@@ -40,6 +40,7 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
         String relsExtXml = nodeEnricher.getRelsExt(event);
         RdfManipulator rdfManipulator = new RdfManipulator(relsExtXml);
         addParentChildRelations(event, rdfManipulator);
+        rdfManipulator.clearOldContentModels();
         addContentModels(nodeEnricher, rdfManipulator);
         logger.debug("Writing rdf for {}:\n{}", event.getLocation(), rdfManipulator);
         //Finally write the new RELS-EXT back to DOMS.
