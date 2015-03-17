@@ -1,3 +1,6 @@
+1.8
+* Remove old enrichment relations when enriching
+
 1.7
 * Use newest version of framework
 * Add logging of execution time

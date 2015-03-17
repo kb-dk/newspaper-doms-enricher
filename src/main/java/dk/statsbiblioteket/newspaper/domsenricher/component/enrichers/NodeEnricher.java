@@ -17,7 +17,8 @@ import java.util.List;
  */
 public class NodeEnricher {
 
-    public static final String COMMENT = "Modified by " + DomsEnricherComponent.class.getSimpleName();
+    public static final String COMMENT = "Modified by " + DomsEnricherComponent.class.getSimpleName() +  ", version: "
+            + DomsEnricherComponent.class.getPackage().getImplementationVersion();
     public static final String RELS_EXT = "RELS-EXT";
     public static final String APPLICATION_RDF_XML = "application/rdf+xml";
     public static final String UUID = "uuid:";
