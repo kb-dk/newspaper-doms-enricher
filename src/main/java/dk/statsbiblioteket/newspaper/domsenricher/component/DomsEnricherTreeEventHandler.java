@@ -39,7 +39,9 @@ public class DomsEnricherTreeEventHandler extends TreeNodeStateWithChildren {
         NodeEnricher nodeEnricher = nodeEnricherFactory.getNodeEnricher((TreeNodeWithChildren) getCurrentNode());
         String relsExtXml = nodeEnricher.getRelsExt(event);
         RdfManipulator rdfManipulator = new RdfManipulator(relsExtXml);
-        rdfManipulator.clearDomsRelations(NodeEnricher.HAS_BRIK, NodeEnricher.HAS_EDITION, NodeEnricher.HAS_EDITION_PAGE, NodeEnricher.HAS_FILE, NodeEnricher.HAS_FILM, NodeEnricher.HAS_ISO_TARGET, NodeEnricher.HAS_PAGE, NodeEnricher.HAS_WORKSHIFT);
+        rdfManipulator.clearDomsRelations(NodeEnricher.HAS_BRIK, NodeEnricher.HAS_EDITION, NodeEnricher.HAS_EDITION_PAGE,
+                                          NodeEnricher.HAS_FILE, NodeEnricher.HAS_FILM, NodeEnricher.HAS_ISO_TARGET,
+                                          NodeEnricher.HAS_PAGE, NodeEnricher.HAS_WORKSHIFT);
         addParentChildRelations(event, rdfManipulator);
         rdfManipulator.clearOldContentModels();
         addContentModels(nodeEnricher, rdfManipulator);
