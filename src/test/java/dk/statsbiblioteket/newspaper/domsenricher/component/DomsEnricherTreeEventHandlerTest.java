@@ -104,7 +104,7 @@ public class DomsEnricherTreeEventHandlerTest {
     }
 
     /**
-     * Test as above, but check that old content models are cleared.
+     * Test as above, but check that old relations are cleared.
      */
     @Test
     public void testRoundTripEnrichNoChildrenAndOldRelations() throws Exception {
