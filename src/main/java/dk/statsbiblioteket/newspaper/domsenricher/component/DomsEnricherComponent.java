@@ -1,7 +1,7 @@
 package dk.statsbiblioteket.newspaper.domsenricher.component;
 
 import dk.statsbiblioteket.doms.central.connectors.EnhancedFedoraImpl;
-import dk.statsbiblioteket.doms.webservices.authentication.Credentials;
+import dk.statsbiblioteket.sbutil.webservices.authentication.Credentials;
 import dk.statsbiblioteket.medieplatform.autonomous.Batch;
 import dk.statsbiblioteket.medieplatform.autonomous.NewspaperBatchAutonomousComponentUtils;
 import dk.statsbiblioteket.medieplatform.autonomous.CallResult;
